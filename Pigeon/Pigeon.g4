@@ -11,14 +11,19 @@ varDecl
     | keyword='const' ID '=' expr SEP
     ;
 
+varAssignLhs
+    : ID
+    | ID '[' expr ']'
+    ;
+
 varAssign
-    : ID op='=' expr SEP
-    | ID op='+=' expr SEP
-    | ID op='-=' expr SEP
-    | ID op='*=' expr SEP
-    | ID op='/=' expr SEP
-    | ID op='%=' expr SEP
-    | ID op='^=' expr SEP
+    : varAssignLhs op='=' expr SEP
+    | varAssignLhs op='+=' expr SEP
+    | varAssignLhs op='-=' expr SEP
+    | varAssignLhs op='*=' expr SEP
+    | varAssignLhs op='/=' expr SEP
+    | varAssignLhs op='%=' expr SEP
+    | varAssignLhs op='^=' expr SEP
     ;
 
 stmt
@@ -41,7 +46,11 @@ stmtBlock
     ;
 
 expr
-    : ID                                  # variableExpression
+    : '[]'                                # emptyListLiteral
+    | '{}'                                # emptyDictionaryLiteral
+    | '{/}'                               # emptySetLiteral
+    | ID '[' expr ']'                     # collectionElementExpression
+    | ID                                  # variableExpression
     | BOOL                                # boolLiteral
     | NUMBER                              # numberLiteral
     | STRING                              # stringLiteral

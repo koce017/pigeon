@@ -2,26 +2,32 @@
 {
     public class PigeonType
     {
-        internal static readonly PigeonType Error = new PigeonType("?");
+        internal static readonly PigeonType Error = new("?");
 
-        public static readonly PigeonType Any = new PigeonType("*");
-        public static readonly PigeonType Bool = new PigeonType("bool");
-        public static readonly PigeonType Int = new PigeonType("int");
-        public static readonly PigeonType Float = new PigeonType("float");
-        public static readonly PigeonType String = new PigeonType("string");
-        public static readonly PigeonType Void = new PigeonType("void");
+        public static readonly PigeonType Any = new("*");
+        public static readonly PigeonType Bool = new("bool");
+        public static readonly PigeonType Int = new("int");
+        public static readonly PigeonType Float = new("float");
+        public static readonly PigeonType String = new("string");
+        public static readonly PigeonType Void = new("void");
+        public static readonly PigeonType List = new("list");
+        public static readonly PigeonType Dictionary = new("dict");
+        public static readonly PigeonType Set = new("set");
 
         internal static PigeonType FromName(string name)
         {
-            switch (name)
+            return name switch
             {
-                case "bool": return Bool;
-                case "int": return Int;
-                case "float": return Float;
-                case "string": return String;
-                case "void": return Void;
-                default: return Error;
-            }
+                "bool" => Bool,
+                "int" => Int,
+                "float" => Float,
+                "string" => String,
+                "void" => Void,
+                "list" => List,
+                "dict" => Dictionary,
+                "set" => Set,
+                _ => Error,
+            };
         }
 
         internal string Name { get; }

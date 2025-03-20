@@ -39,9 +39,24 @@ namespace Kostic017.Pigeon
             return null;
         }
 
-        public override object VisitParenthesizedExpression([NotNull] PigeonParser.ParenthesizedExpressionContext context)
+        public override object VisitEmptyListLiteral([NotNull] PigeonParser.EmptyListLiteralContext context)
         {
-            return Visit(context.expr());
+            return new List<object>();
+        }
+
+        public override object VisitEmptyDictionaryLiteral([NotNull] PigeonParser.EmptyDictionaryLiteralContext context)
+        {
+            return new Dictionary<object, object>();
+        }
+
+        public override object VisitEmptySetLiteral([NotNull] PigeonParser.EmptySetLiteralContext context)
+        {
+            return new HashSet<object>();
+        }
+
+        public override object VisitCollectionElementExpression([NotNull] PigeonParser.CollectionElementExpressionContext context)
+        {
+            return base.VisitCollectionElementExpression(context); // TODO
         }
 
         public override object VisitBoolLiteral([NotNull] PigeonParser.BoolLiteralContext context)
@@ -59,6 +74,11 @@ namespace Kostic017.Pigeon
             if (analyser.Types.Get(context) == PigeonType.Int)
                 return int.Parse(context.NUMBER().GetText());
             return float.Parse(context.NUMBER().GetText(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+        }
+
+        public override object VisitParenthesizedExpression([NotNull] PigeonParser.ParenthesizedExpressionContext context)
+        {
+            return Visit(context.expr());
         }
 
         public override object VisitUnaryExpression([NotNull] PigeonParser.UnaryExpressionContext context)
@@ -304,7 +324,7 @@ namespace Kostic017.Pigeon
 
         public override object VisitVarAssign([NotNull] PigeonParser.VarAssignContext context)
         {
-            var name = context.ID().GetText();
+            var name = context.varAssignLhs().ID().GetText();
             var type = analyser.Types.Get(context.expr());
             var value = Visit(context.expr());
             var currentValue = functionScopes.Peek().Evaluate(name);

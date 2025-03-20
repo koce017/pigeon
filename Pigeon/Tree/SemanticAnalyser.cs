@@ -134,7 +134,7 @@ namespace Kostic017.Pigeon
 
         public override void ExitVarAssign([NotNull] PigeonParser.VarAssignContext context)
         {
-            var varName = context.ID().GetText();
+            var varName = context.varAssignLhs().ID().GetText();
             var varType = Types.Get(context.expr());
 
             if (scope.TryGetVariable(varName, out var variable))
@@ -160,9 +160,29 @@ namespace Kostic017.Pigeon
                 errorBag.ReportStatementNotInLoop(context.Start.GetTextSpan(), "continue");
         }
 
+        public override void ExitEmptyListLiteral([NotNull] PigeonParser.EmptyListLiteralContext context)
+        {
+            Types.Put(context, PigeonType.List);
+        }
+
+        public override void ExitEmptyDictionaryLiteral([NotNull] PigeonParser.EmptyDictionaryLiteralContext context)
+        {
+            Types.Put(context, PigeonType.Dictionary);
+        }
+
+        public override void ExitEmptySetLiteral([NotNull] PigeonParser.EmptySetLiteralContext context)
+        {
+            Types.Put(context, PigeonType.Set);
+        }
+
+        public override void ExitCollectionElementExpression([NotNull] PigeonParser.CollectionElementExpressionContext context)
+        {
+            Types.Put(context, PigeonType.Any);
+        }
+
         public override void ExitNumberLiteral([NotNull] PigeonParser.NumberLiteralContext context)
         {
-            Types.Put(context, context.GetText().Contains(".") ? PigeonType.Float : PigeonType.Int);
+            Types.Put(context, context.GetText().Contains('.') ? PigeonType.Float : PigeonType.Int);
         }
 
         public override void ExitStringLiteral([NotNull] PigeonParser.StringLiteralContext context)
