@@ -1,0 +1,11 @@
+{
+
+    "antlr4.debug": {
+        "visualParseTreeClustered": true
+    },
+
+    "antlr4.generation": {
+        "listeners": false,
+    },
+
+}
