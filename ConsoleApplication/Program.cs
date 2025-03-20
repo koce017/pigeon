@@ -1,7 +1,6 @@
 ﻿using Kostic017.Pigeon;
 using Kostic017.Pigeon.Symbols;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -11,13 +10,43 @@ namespace TestProject
     class Program
     {
         private bool printTree = false;
-        
+
+        static void Main(string[] args)
+        {
+            var program = new Program();
+
+            if (args.Length == 1)
+            {
+                program.ExecuteFile(args[0]);
+                return;
+            }
+
+            while (true)
+            {
+                Console.Write("> ");
+                var sb = new StringBuilder();
+                var line = Console.ReadLine();
+
+                if (program.HandleCommand(line))
+                    continue;
+
+                while (!string.IsNullOrWhiteSpace(line))
+                {
+                    sb.AppendLine(line);
+                    Console.Write("| ");
+                    line = Console.ReadLine();
+                }
+
+                program.ExecuteCode(sb.ToString());
+            }
+        }
+
         private void ExecuteCode(string code)
         {
             if (code.Trim().Length == 0)
                 return;
 
-            var b = new Builtins();
+            var b = new BuiltinBag();
             b.RegisterVariable(PigeonType.String, "author", true, "Nikola Kostic Koce");
             b.RegisterFunction(PigeonType.String, "prompt", Prompt, PigeonType.String);
             b.RegisterFunction(PigeonType.Int, "prompt_i", PromptI, PigeonType.String);
@@ -54,7 +83,7 @@ namespace TestProject
 
             switch (tokens[0])
             {
-                case "#cls:":
+                case "#cls":
                     Console.Clear();
                     break;
                 case "#tree":
@@ -66,36 +95,6 @@ namespace TestProject
             }
 
             return true;
-        }
-
-        static void Main(string[] args)
-        {
-            var program = new Program();
-
-            if (args.Length == 1)
-            {
-                program.ExecuteFile(args[0]);
-                return;
-            }
-
-            while (true)
-            {
-                Console.Write("> ");
-                var sb = new StringBuilder();
-                var line = Console.ReadLine();
-
-                if (program.HandleCommand(line))
-                    continue;
-                
-                while (!string.IsNullOrWhiteSpace(line))
-                {
-                    sb.AppendLine(line);
-                    Console.Write("| ");
-                    line = Console.ReadLine();
-                }
-
-                program.ExecuteCode(sb.ToString());
-            }
         }
 
         private static object Print(object[] args)

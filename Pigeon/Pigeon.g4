@@ -13,7 +13,7 @@ varDecl
 
 varAssignLhs
     : ID
-    | ID '[' expr ']'
+    | ID '[' index=expr ']'
     ;
 
 varAssign
@@ -46,14 +46,17 @@ stmtBlock
     ;
 
 expr
-    : '[]'                                # emptyListLiteral
-    | '{}'                                # emptyDictionaryLiteral
-    | '{/}'                               # emptySetLiteral
-    | ID                                  # variableExpression
-    | ID '[' expr ']'                     # listElementExpression
+    : ID                                  # variableExpression
+    | ID '[' index=expr ']'               # listElementExpression
     | BOOL                                # boolLiteral
     | NUMBER                              # numberLiteral
     | STRING                              # stringLiteral
+    | 'int[]'                             # emptyIntListLiteral
+    | 'float[]'                           # emptyFloatListLiteral
+    | 'bool[]'                            # emptyBoolListLiteral
+    | 'string[]'                          # emptyStringListLiteral
+    | '{}'                                # emptyDictionaryLiteral
+    | '{/}'                               # emptySetLiteral
     | '(' expr ')'                        # parenthesizedExpression
     | functionCall                        # functionCallExpression
     | op='-' expr                         # unaryExpression

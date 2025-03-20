@@ -40,9 +40,24 @@ namespace Kostic017.Pigeon
             return null;
         }
 
-        public override object VisitEmptyListLiteral([NotNull] PigeonParser.EmptyListLiteralContext context)
+        public override object VisitEmptyIntListLiteral([NotNull] PigeonParser.EmptyIntListLiteralContext context)
         {
-            return new List<object>();
+            return new List<int>();
+        }
+
+        public override object VisitEmptyFloatListLiteral([NotNull] PigeonParser.EmptyFloatListLiteralContext context)
+        {
+            return new List<float>();
+        }
+
+        public override object VisitEmptyStringListLiteral([NotNull] PigeonParser.EmptyStringListLiteralContext context)
+        {
+            return new List<string>();
+        }
+
+        public override object VisitEmptyBoolListLiteral([NotNull] PigeonParser.EmptyBoolListLiteralContext context)
+        {
+            return new List<bool>();
         }
 
         public override object VisitEmptyDictionaryLiteral([NotNull] PigeonParser.EmptyDictionaryLiteralContext context)
@@ -194,11 +209,27 @@ namespace Kostic017.Pigeon
 
         public override object VisitListElementExpression([NotNull] PigeonParser.ListElementExpressionContext context)
         {
-            var list = (List<object>)functionScopes.Peek().Evaluate(context.ID().GetText());
-            int idx = (int)Visit(context.expr());
-            if (idx < 0 || idx >= list.Count)
-                throw new EvaluatorException($"Index {idx} out of bounds for length {list.Count} at line {context.GetTextSpan().Line}");
-            return list[idx];
+            int index = (int) Visit(context.expr());
+            var list = functionScopes.Peek().Evaluate(context.ID().GetText());
+            
+            switch (analyser.Types.Get(context).Name)
+            {
+                case "int[]":
+                    CheckBounds(index, (List<int>) list, context.GetTextSpan().Line);
+                    return ((List<int>) list)[index];
+                case "fliat[]":
+                    CheckBounds(index, (List<float>) list, context.GetTextSpan().Line);
+                    return ((List<float>) list)[index];
+                case "string[]":
+                    CheckBounds(index, (List<string>) list, context.GetTextSpan().Line);
+                    return ((List<string>) list)[index];
+                case "bool[]":
+                    CheckBounds(index, (List<bool>) list, context.GetTextSpan().Line);
+                    return ((List<bool>) list)[index];
+                default:
+                    throw new InternalErrorException($"Unsupported list type {analyser.Types.Get(context).Name}");
+
+            }
         }
 
         public override object VisitIfStatement([NotNull] PigeonParser.IfStatementContext context)
@@ -331,14 +362,22 @@ namespace Kostic017.Pigeon
         public override object VisitVarAssign([NotNull] PigeonParser.VarAssignContext context)
         {
             var name = context.varAssignLhs().ID().GetText();
-            var type = analyser.Types.Get(context.expr());
             var value = Visit(context.expr());
+            var type = analyser.Types.Get(context.expr());
             var currentValue = functionScopes.Peek().Evaluate(name);
 
             switch (context.op.Text)
             {
                 case "=":
-                    Assign(name, value);
+                    if (context.varAssignLhs().index != null)
+                    {
+                        var list = (List<object>) functionScopes.Peek().Evaluate(name);
+                        int index = (int) Visit(context.varAssignLhs().expr());
+                        CheckBounds(index, list, context.GetTextSpan().Line);
+                        list[index] = value;
+                    }
+                    else 
+                        Assign(name, value);
                     break;
 
                 case "+=":
@@ -422,9 +461,15 @@ namespace Kostic017.Pigeon
             functionScopes.Peek().Assign(name, value);
         }
 
-        private bool ShouldCreateScope(PigeonParser.StmtBlockContext context)
+        private static void CheckBounds<T>(int index, List<T> list, int line)
         {
-            return !(context.Parent is PigeonParser.ForStatementContext);
+            if (index < 0 || index >= list.Count)
+                throw new EvaluatorException($"Index {index} out of bounds for length {list.Count} at line {line}");
+        }
+
+        private static bool ShouldCreateScope(PigeonParser.StmtBlockContext context)
+        {
+            return context.Parent is not PigeonParser.ForStatementContext;
         }
         
     }

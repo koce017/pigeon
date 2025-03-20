@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Kostic017.Pigeon.Symbols
 {
-    public class Builtins
+    public class BuiltinBag
     {
         private readonly Dictionary<string, Variable> variables = [];
         private readonly Dictionary<string, Function> functions = [];

@@ -14,17 +14,6 @@ namespace Kostic017.Pigeon.Tests
 
         private TextWriter outputStream;
         private Queue<string> inputStream;
-        
-        private readonly Builtins b = new Builtins();
-
-        public PigeonTest()
-        {
-            b.RegisterFunction(PigeonType.String, "prompt", Prompt, PigeonType.String);
-            b.RegisterFunction(PigeonType.Int, "prompt_i", PromptI, PigeonType.String);
-            b.RegisterFunction(PigeonType.Float, "prompt_f", PromptF, PigeonType.String);
-            b.RegisterFunction(PigeonType.Bool, "prompt_b", PromptB, PigeonType.String);
-            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Any);
-        }
 
         [Theory]
         [MemberData(nameof(TestCases))]
@@ -71,18 +60,25 @@ namespace Kostic017.Pigeon.Tests
             return Normalize(outputStream.ToString());
         }
 
-        private string[] ReadCases(string file)
+        private static string[] ReadCases(string file)
         {
             return Normalize(File.ReadAllText(file)).Split("---").Select(v => v.Trim()).ToArray();
         }
 
-        private string Normalize(string str)
+        private static string Normalize(string str)
         {
             return str.Replace("\r\n", "\n").Trim();
         }
 
         private void Execute(string code)
         {
+            var b = new BuiltinBag();
+            b.RegisterFunction(PigeonType.String, "prompt", Prompt, PigeonType.String);
+            b.RegisterFunction(PigeonType.Int, "prompt_i", PromptI, PigeonType.String);
+            b.RegisterFunction(PigeonType.Float, "prompt_f", PromptF, PigeonType.String);
+            b.RegisterFunction(PigeonType.Bool, "prompt_b", PromptB, PigeonType.String);
+            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Any);
+
             var interpreter = new Interpreter(code, b);
             interpreter.PrintErr(outputStream);
             interpreter.Evaluate();

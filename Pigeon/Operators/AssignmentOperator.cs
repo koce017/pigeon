@@ -39,10 +39,12 @@ namespace Kostic017.Pigeon.Operators
                         new AssignmentOperator(PigeonType.Float, PigeonType.Float),
                         new AssignmentOperator(PigeonType.String, PigeonType.String),
                         new AssignmentOperator(PigeonType.Bool, PigeonType.Bool),
-                        new AssignmentOperator(PigeonType.List, PigeonType.Int),
-                        new AssignmentOperator(PigeonType.List, PigeonType.Float),
-                        new AssignmentOperator(PigeonType.List, PigeonType.String),
-                        new AssignmentOperator(PigeonType.List, PigeonType.Bool),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Int),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Int),
+                        new AssignmentOperator(PigeonType.StringList, PigeonType.String),
+                        new AssignmentOperator(PigeonType.BoolList, PigeonType.Bool),
                     }
                 },
                 {
@@ -57,6 +59,10 @@ namespace Kostic017.Pigeon.Operators
                         new AssignmentOperator(PigeonType.String, PigeonType.Float),
                         new AssignmentOperator(PigeonType.String, PigeonType.Bool),
                         new AssignmentOperator(PigeonType.String, PigeonType.String),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Int),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Int),
                     }
                 },
                 {
@@ -67,6 +73,10 @@ namespace Kostic017.Pigeon.Operators
                         new AssignmentOperator(PigeonType.Int, PigeonType.Float),
                         new AssignmentOperator(PigeonType.Float, PigeonType.Int),
                         new AssignmentOperator(PigeonType.Float, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Int),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Int),
                     }
                 },
                 {
@@ -77,6 +87,10 @@ namespace Kostic017.Pigeon.Operators
                         new AssignmentOperator(PigeonType.Int, PigeonType.Float),
                         new AssignmentOperator(PigeonType.Float, PigeonType.Int),
                         new AssignmentOperator(PigeonType.Float, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Int),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Int),
                     }
                 },
                 {
@@ -87,6 +101,10 @@ namespace Kostic017.Pigeon.Operators
                         new AssignmentOperator(PigeonType.Int, PigeonType.Float),
                         new AssignmentOperator(PigeonType.Float, PigeonType.Int),
                         new AssignmentOperator(PigeonType.Float, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Int),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.FloatList, PigeonType.Int),
                     }
                 },
                 {
@@ -94,6 +112,7 @@ namespace Kostic017.Pigeon.Operators
                     new[]
                     {
                         new AssignmentOperator(PigeonType.Int, PigeonType.Int),
+                        new AssignmentOperator(PigeonType.IntList, PigeonType.Int),
                     }
                 },
 

@@ -160,9 +160,24 @@ namespace Kostic017.Pigeon
                 errorBag.ReportStatementNotInLoop(context.Start.GetTextSpan(), "continue");
         }
 
-        public override void ExitEmptyListLiteral([NotNull] PigeonParser.EmptyListLiteralContext context)
+        public override void ExitEmptyIntListLiteral([NotNull] PigeonParser.EmptyIntListLiteralContext context)
         {
-            Types.Put(context, PigeonType.List);
+            Types.Put(context, PigeonType.IntList);
+        }
+
+        public override void ExitEmptyFloatListLiteral([NotNull] PigeonParser.EmptyFloatListLiteralContext context)
+        {
+            Types.Put(context, PigeonType.FloatList);
+        }
+
+        public override void ExitEmptyStringListLiteral([NotNull] PigeonParser.EmptyStringListLiteralContext context)
+        {
+            Types.Put(context, PigeonType.StringList);
+        }
+
+        public override void ExitEmptyBoolListLiteral([NotNull] PigeonParser.EmptyBoolListLiteralContext context)
+        {
+            Types.Put(context, PigeonType.BoolList);
         }
 
         public override void ExitEmptyDictionaryLiteral([NotNull] PigeonParser.EmptyDictionaryLiteralContext context)
