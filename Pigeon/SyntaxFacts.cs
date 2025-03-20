@@ -4,8 +4,8 @@ namespace Kostic017.Pigeon
 {
     public static class SyntaxFacts
     {
-        public static readonly HashSet<string> Keywords = new HashSet<string>
-        {
+        public static readonly HashSet<string> Keywords =
+        [
             "if",
             "else",
             "for",
@@ -18,23 +18,26 @@ namespace Kostic017.Pigeon
             "return",
             "let",
             "const",
-        };
+        ];
 
-        public static readonly HashSet<string> Types = new HashSet<string>
-        {
+        public static readonly HashSet<string> Types =
+        [
+            "void",
             "int",
             "float",
             "bool",
             "string",
-            "void"
-        };
+            "list",
+            "dict",
+            "set",
+        ];
 
-        internal static readonly HashSet<char> EscapeChars = new HashSet<char>
-        {
+        internal static readonly HashSet<char> EscapeChars =
+        [
             '\\',
             't',
             'n',
             '"',
-        };
+        ];
     }
 }

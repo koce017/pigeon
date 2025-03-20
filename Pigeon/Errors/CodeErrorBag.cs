@@ -78,6 +78,11 @@ namespace Kostic017.Pigeon.Errors
             Report($"{statement} should be in a loop", textSpan);
         }
 
+        internal void ReportOutOfBounds(TextSpan textSpan, int index, int length)
+        {
+            Report($"Index {index} out of bounds for length {length}", textSpan);
+        }
+
         public IEnumerator<CodeError> GetEnumerator()
         {
             return errors.GetEnumerator();

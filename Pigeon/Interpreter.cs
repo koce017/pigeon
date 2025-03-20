@@ -2,6 +2,8 @@
 using Antlr4.Runtime.Tree;
 using Kostic017.Pigeon.Errors;
 using Kostic017.Pigeon.Symbols;
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Kostic017.Pigeon
@@ -29,11 +31,14 @@ namespace Kostic017.Pigeon
 
             if (!errorBag.IsEmpty())
                 return;
-         
+
             var walker = new ParseTreeWalker();
             var globalScope = new GlobalScope();
 
+            builtins.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.List);
+            builtins.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.List, PigeonType.Any);
             builtins.Register(globalScope);
+
             var functionDeclarator = new FunctionDeclarator(errorBag, globalScope);
             walker.Walk(functionDeclarator, tree);
 
@@ -44,7 +49,7 @@ namespace Kostic017.Pigeon
         public void Evaluate()
         {
             if (!errorBag.IsEmpty())
-                throw new IllegalUsageException("Cannot evaluate because of parsing and other errors");
+                throw new EvaluatorException("Cannot evaluate because of parsing and other errors");
             new Evaluator(analyser).Visit(tree);
         }
 
@@ -62,6 +67,19 @@ namespace Kostic017.Pigeon
         {
             foreach (var error in errorBag)
                 writer.WriteLine(error.ToString());
+        }
+
+        private static object ListCount(object[] args)
+        {
+            var list = (List<object>)args[0];
+            return list.Count;
+        }
+
+        private static object ListAdd(object[] args)
+        {
+            var list = (List<object>)args[0];
+            list.Add(args[1]);
+            return null;
         }
     }
 }

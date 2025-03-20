@@ -27,8 +27,8 @@ namespace Kostic017.Pigeon.Operators
             return false;
         }
 
-        private static readonly Dictionary<string, AssignmentOperator[]> operators = new Dictionary<string, AssignmentOperator[]>
-            {
+        private static readonly Dictionary<string, AssignmentOperator[]> operators = new()
+        {
                 {
                     "=",
                     new[]
@@ -39,6 +39,10 @@ namespace Kostic017.Pigeon.Operators
                         new AssignmentOperator(PigeonType.Float, PigeonType.Float),
                         new AssignmentOperator(PigeonType.String, PigeonType.String),
                         new AssignmentOperator(PigeonType.Bool, PigeonType.Bool),
+                        new AssignmentOperator(PigeonType.List, PigeonType.Int),
+                        new AssignmentOperator(PigeonType.List, PigeonType.Float),
+                        new AssignmentOperator(PigeonType.List, PigeonType.String),
+                        new AssignmentOperator(PigeonType.List, PigeonType.Bool),
                     }
                 },
                 {

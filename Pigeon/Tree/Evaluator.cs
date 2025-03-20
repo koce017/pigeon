@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime.Misc;
+using Kostic017.Pigeon.Errors;
 using Kostic017.Pigeon.Symbols;
 using System;
 using System.Collections.Generic;
@@ -52,11 +53,6 @@ namespace Kostic017.Pigeon
         public override object VisitEmptySetLiteral([NotNull] PigeonParser.EmptySetLiteralContext context)
         {
             return new HashSet<object>();
-        }
-
-        public override object VisitCollectionElementExpression([NotNull] PigeonParser.CollectionElementExpressionContext context)
-        {
-            return base.VisitCollectionElementExpression(context); // TODO
         }
 
         public override object VisitBoolLiteral([NotNull] PigeonParser.BoolLiteralContext context)
@@ -190,9 +186,19 @@ namespace Kostic017.Pigeon
             return (bool) condition ? whenTrue : whenFalse;
         }
 
+        
         public override object VisitVariableExpression([NotNull] PigeonParser.VariableExpressionContext context)
         {
             return functionScopes.Peek().Evaluate(context.ID().GetText());
+        }
+
+        public override object VisitListElementExpression([NotNull] PigeonParser.ListElementExpressionContext context)
+        {
+            var list = (List<object>)functionScopes.Peek().Evaluate(context.ID().GetText());
+            int idx = (int)Visit(context.expr());
+            if (idx < 0 || idx >= list.Count)
+                throw new EvaluatorException($"Index {idx} out of bounds for length {list.Count} at line {context.GetTextSpan().Line}");
+            return list[idx];
         }
 
         public override object VisitIfStatement([NotNull] PigeonParser.IfStatementContext context)

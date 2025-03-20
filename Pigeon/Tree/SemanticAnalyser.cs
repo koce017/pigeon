@@ -136,7 +136,7 @@ namespace Kostic017.Pigeon
         {
             var varName = context.varAssignLhs().ID().GetText();
             var varType = Types.Get(context.expr());
-
+            
             if (scope.TryGetVariable(varName, out var variable))
             {
                 if (variable.ReadOnly)
@@ -173,11 +173,6 @@ namespace Kostic017.Pigeon
         public override void ExitEmptySetLiteral([NotNull] PigeonParser.EmptySetLiteralContext context)
         {
             Types.Put(context, PigeonType.Set);
-        }
-
-        public override void ExitCollectionElementExpression([NotNull] PigeonParser.CollectionElementExpressionContext context)
-        {
-            Types.Put(context, PigeonType.Any);
         }
 
         public override void ExitNumberLiteral([NotNull] PigeonParser.NumberLiteralContext context)
@@ -241,12 +236,17 @@ namespace Kostic017.Pigeon
             }
         }
 
+        public override void ExitListElementExpression([NotNull] PigeonParser.ListElementExpressionContext context)
+        {
+            Types.Put(context, PigeonType.Any);
+        }
+
         public override void ExitReturnStatement([NotNull] PigeonParser.ReturnStatementContext context)
         {
             var returnType = context.expr() != null ? Types.Get(context.expr()) : PigeonType.Void;
 
             RuleContext node = context;
-            while (!(node is PigeonParser.FunctionDeclContext))
+            while (node is not PigeonParser.FunctionDeclContext)
                 node = node.Parent;
 
             var functionName = ((PigeonParser.FunctionDeclContext)node).ID().GetText();
@@ -257,11 +257,6 @@ namespace Kostic017.Pigeon
                     errorBag.ReportUnexpectedType(context.expr().GetTextSpan(), function.ReturnType, returnType);
         }
 
-        bool NumberTypes(PigeonType t1, PigeonType t2)
-        {
-            return (t1 == PigeonType.Int && t2 == PigeonType.Float) || (t1 == PigeonType.Float && t2 == PigeonType.Int);
-        }
-
         private void CheckExprType(PigeonParser.ExprContext context, PigeonType expected)
         {
             var actual = Types.Get(context);
@@ -269,7 +264,13 @@ namespace Kostic017.Pigeon
                 errorBag.ReportUnexpectedType(context.GetTextSpan(), expected, actual);
         }
 
-        private bool ShouldCreateScope(PigeonParser.StmtBlockContext context)
+
+        private static bool NumberTypes(PigeonType t1, PigeonType t2)
+        {
+            return (t1 == PigeonType.Int && t2 == PigeonType.Float) || (t1 == PigeonType.Float && t2 == PigeonType.Int);
+        }
+
+        private static bool ShouldCreateScope(PigeonParser.StmtBlockContext context)
         {
             if (
                 context.Parent is PigeonParser.FunctionDeclContext ||
@@ -278,7 +279,7 @@ namespace Kostic017.Pigeon
             return true;
         }
 
-        private bool IsInLoop(RuleContext node)
+        private static bool IsInLoop(RuleContext node)
         {
             while (node != null)
             {

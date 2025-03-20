@@ -49,8 +49,8 @@ expr
     : '[]'                                # emptyListLiteral
     | '{}'                                # emptyDictionaryLiteral
     | '{/}'                               # emptySetLiteral
-    | ID '[' expr ']'                     # collectionElementExpression
     | ID                                  # variableExpression
+    | ID '[' expr ']'                     # listElementExpression
     | BOOL                                # boolLiteral
     | NUMBER                              # numberLiteral
     | STRING                              # stringLiteral
@@ -86,11 +86,14 @@ BOOL
     ;
 
 TYPE
-    : 'int'
+    : 'void'
+    | 'int'
     | 'float'
     | 'string'
     | 'bool'
-    | 'void'
+    | 'list'
+    | 'dict'
+    | 'set'
     ;
 
 NUMBER

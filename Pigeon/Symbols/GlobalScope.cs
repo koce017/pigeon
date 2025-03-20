@@ -4,7 +4,7 @@ namespace Kostic017.Pigeon.Symbols
 {
     class GlobalScope : Scope
     {
-        private readonly Dictionary<string, Function> functions = new Dictionary<string, Function>();
+        private readonly Dictionary<string, Function> functions = [];
 
         internal GlobalScope() : base(null)
         {

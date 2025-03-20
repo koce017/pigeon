@@ -5,8 +5,8 @@ namespace Kostic017.Pigeon.Symbols
 {
     public class Builtins
     {
-        private readonly Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
-        private readonly Dictionary<string, Function> functions = new Dictionary<string, Function>();
+        private readonly Dictionary<string, Variable> variables = [];
+        private readonly Dictionary<string, Function> functions = [];
 
         internal void Register(GlobalScope globalScope)
         {

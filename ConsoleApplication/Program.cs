@@ -1,6 +1,7 @@
 ﻿using Kostic017.Pigeon;
 using Kostic017.Pigeon.Symbols;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -10,20 +11,20 @@ namespace TestProject
     class Program
     {
         private bool printTree = false;
-        private readonly Builtins b = new Builtins();
-
-        private Program()
+        
+        private void ExecuteCode(string code)
         {
+            if (code.Trim().Length == 0)
+                return;
+
+            var b = new Builtins();
             b.RegisterVariable(PigeonType.String, "author", true, "Nikola Kostic Koce");
             b.RegisterFunction(PigeonType.String, "prompt", Prompt, PigeonType.String);
             b.RegisterFunction(PigeonType.Int, "prompt_i", PromptI, PigeonType.String);
             b.RegisterFunction(PigeonType.Float, "prompt_f", PromptF, PigeonType.String);
             b.RegisterFunction(PigeonType.Bool, "prompt_b", PromptB, PigeonType.String);
             b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Any);
-        }
-        
-        private void ExecuteCode(string code)
-        {
+
             var interpreter = new Interpreter(code, b);
             if (printTree)
                 interpreter.PrintTree(Console.Out);
@@ -40,14 +41,14 @@ namespace TestProject
             ExecuteCode(Normalize(File.ReadAllText(file)));
         }
 
-        private string Normalize(string str)
+        private static string Normalize(string str)
         {
             return str.Replace("\r\n", "\n").Trim();
         }
 
         private bool HandleCommand(string line)
         {
-            if (!line.StartsWith("#"))
+            if (!line.StartsWith('#'))
                 return false;
             var tokens = line.Split(' ');
 
@@ -126,5 +127,6 @@ namespace TestProject
             Console.Write(args[0]);
             return bool.Parse(Console.ReadLine());
         }
+
     }
 }
