@@ -21,7 +21,7 @@ namespace Kostic017.Pigeon.Tests
         public void Test(string sample)
         {
             var inFile = Path.Combine(TestsFolder, sample + ".in");
-            var code = Normalize(File.ReadAllText(Path.Combine(SamplesFolder, sample + ".pig")));
+            var code = NormalizeNewLines(File.ReadAllText(Path.Combine(SamplesFolder, sample + ".pig")));
             var outputs = ReadCases(Path.Combine(TestsFolder, sample + ".out"));
 
             if (File.Exists(inFile))
@@ -58,15 +58,15 @@ namespace Kostic017.Pigeon.Tests
 
         private string ActualOutput()
         {
-            return Normalize(outputStream.ToString());
+            return NormalizeNewLines(outputStream.ToString());
         }
 
         private static string[] ReadCases(string file)
         {
-            return Normalize(File.ReadAllText(file)).Split("---").Select(v => v.Trim()).ToArray();
+            return NormalizeNewLines(File.ReadAllText(file)).Split("---").Select(v => v.Trim()).ToArray();
         }
 
-        private static string Normalize(string str)
+        private static string NormalizeNewLines(string str)
         {
             return str.Replace("\r\n", "\n").Trim();
         }
@@ -87,7 +87,10 @@ namespace Kostic017.Pigeon.Tests
 
         private object Print(object[] arg)
         {
-            outputStream.WriteLine(arg[0]);
+            if (arg[0] is float f)
+                outputStream.WriteLine(f.ToString(CultureInfo.InvariantCulture));
+            else
+                outputStream.WriteLine(arg[0]);
             return null;
         }
 
@@ -103,7 +106,7 @@ namespace Kostic017.Pigeon.Tests
 
         private object PromptF(object[] arg)
         {
-            return float.Parse(inputStream.Dequeue(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+            return float.Parse(inputStream.Dequeue(), NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
         }
 
         private object PromptB(object[] arg)

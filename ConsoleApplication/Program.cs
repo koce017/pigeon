@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TestProject
 {
@@ -97,9 +98,12 @@ namespace TestProject
             return true;
         }
 
-        private static object Print(object[] args)
+        private object Print(object[] arg)
         {
-            Console.WriteLine(args[0]);
+            if (arg[0] is float f)
+                Console.WriteLine(f.ToString(CultureInfo.InvariantCulture));
+            else
+                Console.WriteLine(arg[0]);
             return null;
         }
 
@@ -118,7 +122,7 @@ namespace TestProject
         private static object PromptF(object[] args)
         {
             Console.Write(args[0]);
-            return float.Parse(Console.ReadLine(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+            return float.Parse(Console.ReadLine(), NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
         }
 
         private static object PromptB(object[] args)
