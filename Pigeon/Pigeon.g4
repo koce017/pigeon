@@ -30,13 +30,13 @@ stmt
     : varDecl                                              # variableDeclarationStatement
     | varAssign                                            # variableAssignmentStatement
     | functionCall SEP                                     # functionCallStatement
-    | 'return' expr? SEP                                   # returnStatement
-    | 'break' SEP                                          # breakStatement
-    | 'continue' SEP                                       # continueStatement
-    | 'while' expr stmtBlock                               # whileStatement
-    | 'do' stmtBlock 'while' expr                          # doWhileStatement
     | 'if' expr stmtBlock ('else' stmtBlock)?              # ifStatement
     | 'for' ID '=' expr dir=('to'|'downto') expr stmtBlock # forStatement
+    | 'while' expr stmtBlock                               # whileStatement
+    | 'do' stmtBlock 'while' expr                          # doWhileStatement
+    | 'break' SEP                                          # breakStatement
+    | 'continue' SEP                                       # continueStatement
+    | 'return' expr? SEP                                   # returnStatement
     ;
 
 stmtBlock
@@ -48,14 +48,13 @@ stmtBlock
 expr
     : ID                                  # variableExpression
     | ID '[' index=expr ']'               # listElementExpression
-    | BOOL                                # boolLiteral
     | NUMBER                              # numberLiteral
     | STRING                              # stringLiteral
+    | BOOL                                # boolLiteral
     | 'int[]'                             # emptyIntListLiteral
     | 'float[]'                           # emptyFloatListLiteral
     | 'bool[]'                            # emptyBoolListLiteral
     | 'string[]'                          # emptyStringListLiteral
-    | '{}'                                # emptyDictionaryLiteral
     | '{/}'                               # emptySetLiteral
     | '(' expr ')'                        # parenthesizedExpression
     | functionCall                        # functionCallExpression

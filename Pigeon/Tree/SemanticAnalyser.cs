@@ -66,20 +66,6 @@ namespace Kostic017.Pigeon
             }
         }
 
-        public override void ExitFunctionCallExpression([NotNull] PigeonParser.FunctionCallExpressionContext context)
-        {
-            var functionName = context.functionCall().ID().GetText();
-            if (GlobalScope.TryGetFunction(functionName, out var function))
-            {
-                Types.Put(context, function.ReturnType);
-            }
-            else
-            {
-                Types.Put(context, PigeonType.Error);
-                errorBag.ReportUndeclaredFunction(context.GetTextSpan(), functionName);
-            }
-        }
-
         public override void EnterStmtBlock([NotNull] PigeonParser.StmtBlockContext context)
         {
             if (ShouldCreateScope(context))
@@ -90,34 +76,6 @@ namespace Kostic017.Pigeon
         {
             if (ShouldCreateScope(context))
                 scope = scope.Parent;
-        }
-
-        public override void EnterForStatement([NotNull] PigeonParser.ForStatementContext context)
-        {
-            scope = new Scope(scope);
-            scope.DeclareVariable(PigeonType.Int, context.ID().GetText(), false);
-        }
-
-        public override void ExitForStatement([NotNull] PigeonParser.ForStatementContext context)
-        {
-            CheckExprType(context.expr(0), PigeonType.Int);
-            CheckExprType(context.expr(1), PigeonType.Int);
-            scope = scope.Parent;
-        }
-
-        public override void ExitWhileStatement([NotNull] PigeonParser.WhileStatementContext context)
-        {
-            CheckExprType(context.expr(), PigeonType.Bool);
-        }
-
-        public override void ExitDoWhileStatement([NotNull] PigeonParser.DoWhileStatementContext context)
-        {
-            CheckExprType(context.expr(), PigeonType.Bool);
-        }
-
-        public override void ExitIfStatement([NotNull] PigeonParser.IfStatementContext context)
-        {
-            CheckExprType(context.expr(), PigeonType.Bool);
         }
 
         public override void ExitVarDecl([NotNull] PigeonParser.VarDeclContext context)
@@ -148,6 +106,35 @@ namespace Kostic017.Pigeon
                 errorBag.ReportUndeclaredVariable(context.GetTextSpan(), varName);
         }
 
+        public override void ExitIfStatement([NotNull] PigeonParser.IfStatementContext context)
+        {
+            CheckExprType(context.expr(), PigeonType.Bool);
+        }
+
+        public override void EnterForStatement([NotNull] PigeonParser.ForStatementContext context)
+        {
+            scope = new Scope(scope);
+            scope.DeclareVariable(PigeonType.Int, context.ID().GetText(), false);
+        }
+
+        public override void ExitForStatement([NotNull] PigeonParser.ForStatementContext context)
+        {
+            CheckExprType(context.expr(0), PigeonType.Int);
+            CheckExprType(context.expr(1), PigeonType.Int);
+            scope = scope.Parent;
+        }
+
+        public override void ExitWhileStatement([NotNull] PigeonParser.WhileStatementContext context)
+        {
+            CheckExprType(context.expr(), PigeonType.Bool);
+        }
+
+        public override void ExitDoWhileStatement([NotNull] PigeonParser.DoWhileStatementContext context)
+        {
+            CheckExprType(context.expr(), PigeonType.Bool);
+        }
+
+
         public override void ExitBreakStatement([NotNull] PigeonParser.BreakStatementContext context)
         {
             if (!IsInLoop(context))
@@ -160,81 +147,20 @@ namespace Kostic017.Pigeon
                 errorBag.ReportStatementNotInLoop(context.Start.GetTextSpan(), "continue");
         }
 
-        public override void ExitEmptyIntListLiteral([NotNull] PigeonParser.EmptyIntListLiteralContext context)
+        public override void ExitReturnStatement([NotNull] PigeonParser.ReturnStatementContext context)
         {
-            Types.Put(context, PigeonType.IntList);
-        }
+            var returnType = context.expr() != null ? Types.Get(context.expr()) : PigeonType.Void;
 
-        public override void ExitEmptyFloatListLiteral([NotNull] PigeonParser.EmptyFloatListLiteralContext context)
-        {
-            Types.Put(context, PigeonType.FloatList);
-        }
+            RuleContext node = context;
+            while (node is not PigeonParser.FunctionDeclContext)
+                node = node.Parent;
 
-        public override void ExitEmptyStringListLiteral([NotNull] PigeonParser.EmptyStringListLiteralContext context)
-        {
-            Types.Put(context, PigeonType.StringList);
-        }
+            var functionName = ((PigeonParser.FunctionDeclContext)node).ID().GetText();
+            GlobalScope.TryGetFunction(functionName, out var function);
 
-        public override void ExitEmptyBoolListLiteral([NotNull] PigeonParser.EmptyBoolListLiteralContext context)
-        {
-            Types.Put(context, PigeonType.BoolList);
-        }
-
-        public override void ExitEmptyDictionaryLiteral([NotNull] PigeonParser.EmptyDictionaryLiteralContext context)
-        {
-            Types.Put(context, PigeonType.Dictionary);
-        }
-
-        public override void ExitEmptySetLiteral([NotNull] PigeonParser.EmptySetLiteralContext context)
-        {
-            Types.Put(context, PigeonType.Set);
-        }
-
-        public override void ExitNumberLiteral([NotNull] PigeonParser.NumberLiteralContext context)
-        {
-            Types.Put(context, context.GetText().Contains('.') ? PigeonType.Float : PigeonType.Int);
-        }
-
-        public override void ExitStringLiteral([NotNull] PigeonParser.StringLiteralContext context)
-        {
-            Types.Put(context, PigeonType.String);
-        }
-
-        public override void ExitBoolLiteral([NotNull] PigeonParser.BoolLiteralContext context)
-        {
-            Types.Put(context, PigeonType.Bool);
-        }
-
-        public override void ExitParenthesizedExpression([NotNull] PigeonParser.ParenthesizedExpressionContext context)
-        {
-            Types.Put(context, Types.Get(context.expr()));
-        }
-
-        public override void ExitBinaryExpression([NotNull] PigeonParser.BinaryExpressionContext context)
-        {
-            var left = Types.Get(context.expr(0));
-            var right = Types.Get(context.expr(1));
-            if (!BinaryOperator.TryGetResType(context.op.Text, left, right, out var type))
-                errorBag.ReportInvalidTypeBinaryOperator(context.op.GetTextSpan(), context.op.Text, left, right);
-            Types.Put(context, type);
-        }
-
-        public override void ExitUnaryExpression([NotNull] PigeonParser.UnaryExpressionContext context)
-        {
-            var operandType = Types.Get(context.expr());
-            if (!UnaryOperator.TryGetResType(context.op.Text, operandType, out var type))
-                errorBag.ReportInvalidTypeUnaryOperator(context.op.GetTextSpan(), context.op.Text, type);
-            Types.Put(context, type);
-        }
-
-        public override void ExitTernaryExpression([NotNull] PigeonParser.TernaryExpressionContext context)
-        {
-            CheckExprType(context.expr(0), PigeonType.Bool);
-            var whenTrue = Types.Get(context.expr(1));
-            var whenFalse = Types.Get(context.expr(2));
-            if (!TernaryOperator.TryGetResType(whenTrue, whenFalse, out var type))
-                errorBag.ReportInvalidTypeTernaryOperator(context.GetTextSpan(), whenTrue, whenFalse);
-            Types.Put(context, type);
+            if (returnType != function.ReturnType)
+                if (!NumberTypes(returnType, function.ReturnType))
+                    errorBag.ReportUnexpectedType(context.expr().GetTextSpan(), function.ReturnType, returnType);
         }
 
         public override void ExitVariableExpression([NotNull] PigeonParser.VariableExpressionContext context)
@@ -273,20 +199,90 @@ namespace Kostic017.Pigeon
             }
         }
 
-        public override void ExitReturnStatement([NotNull] PigeonParser.ReturnStatementContext context)
+        public override void ExitNumberLiteral([NotNull] PigeonParser.NumberLiteralContext context)
         {
-            var returnType = context.expr() != null ? Types.Get(context.expr()) : PigeonType.Void;
+            Types.Put(context, context.GetText().Contains('.') ? PigeonType.Float : PigeonType.Int);
+        }
 
-            RuleContext node = context;
-            while (node is not PigeonParser.FunctionDeclContext)
-                node = node.Parent;
+        public override void ExitStringLiteral([NotNull] PigeonParser.StringLiteralContext context)
+        {
+            Types.Put(context, PigeonType.String);
+        }
 
-            var functionName = ((PigeonParser.FunctionDeclContext)node).ID().GetText();
-            GlobalScope.TryGetFunction(functionName, out var function);
+        public override void ExitBoolLiteral([NotNull] PigeonParser.BoolLiteralContext context)
+        {
+            Types.Put(context, PigeonType.Bool);
+        }
 
-            if (returnType != function.ReturnType)
-                if (!NumberTypes(returnType, function.ReturnType))
-                    errorBag.ReportUnexpectedType(context.expr().GetTextSpan(), function.ReturnType, returnType);
+        public override void ExitEmptyIntListLiteral([NotNull] PigeonParser.EmptyIntListLiteralContext context)
+        {
+            Types.Put(context, PigeonType.IntList);
+        }
+
+        public override void ExitEmptyFloatListLiteral([NotNull] PigeonParser.EmptyFloatListLiteralContext context)
+        {
+            Types.Put(context, PigeonType.FloatList);
+        }
+
+        public override void ExitEmptyStringListLiteral([NotNull] PigeonParser.EmptyStringListLiteralContext context)
+        {
+            Types.Put(context, PigeonType.StringList);
+        }
+
+        public override void ExitEmptyBoolListLiteral([NotNull] PigeonParser.EmptyBoolListLiteralContext context)
+        {
+            Types.Put(context, PigeonType.BoolList);
+        }
+
+        public override void ExitEmptySetLiteral([NotNull] PigeonParser.EmptySetLiteralContext context)
+        {
+            Types.Put(context, PigeonType.Set);
+        }
+
+        public override void ExitParenthesizedExpression([NotNull] PigeonParser.ParenthesizedExpressionContext context)
+        {
+            Types.Put(context, Types.Get(context.expr()));
+        }
+
+        public override void ExitFunctionCallExpression([NotNull] PigeonParser.FunctionCallExpressionContext context)
+        {
+            var functionName = context.functionCall().ID().GetText();
+            if (GlobalScope.TryGetFunction(functionName, out var function))
+            {
+                Types.Put(context, function.ReturnType);
+            }
+            else
+            {
+                Types.Put(context, PigeonType.Error);
+                errorBag.ReportUndeclaredFunction(context.GetTextSpan(), functionName);
+            }
+        }
+
+        public override void ExitUnaryExpression([NotNull] PigeonParser.UnaryExpressionContext context)
+        {
+            var operandType = Types.Get(context.expr());
+            if (!UnaryOperator.TryGetResType(context.op.Text, operandType, out var type))
+                errorBag.ReportInvalidTypeUnaryOperator(context.op.GetTextSpan(), context.op.Text, type);
+            Types.Put(context, type);
+        }
+
+        public override void ExitBinaryExpression([NotNull] PigeonParser.BinaryExpressionContext context)
+        {
+            var left = Types.Get(context.expr(0));
+            var right = Types.Get(context.expr(1));
+            if (!BinaryOperator.TryGetResType(context.op.Text, left, right, out var type))
+                errorBag.ReportInvalidTypeBinaryOperator(context.op.GetTextSpan(), context.op.Text, left, right);
+            Types.Put(context, type);
+        }
+
+        public override void ExitTernaryExpression([NotNull] PigeonParser.TernaryExpressionContext context)
+        {
+            CheckExprType(context.expr(0), PigeonType.Bool);
+            var whenTrue = Types.Get(context.expr(1));
+            var whenFalse = Types.Get(context.expr(2));
+            if (!TernaryOperator.TryGetResType(whenTrue, whenFalse, out var type))
+                errorBag.ReportInvalidTypeTernaryOperator(context.GetTextSpan(), whenTrue, whenFalse);
+            Types.Put(context, type);
         }
 
         private void CheckExprType(PigeonParser.ExprContext context, PigeonType expected)
