@@ -43,7 +43,7 @@ namespace Kostic017.Pigeon
             builtinBag.RegisterFunction(PigeonType.Void, "list_add_f", ListAdd<float>, PigeonType.FloatList, PigeonType.Float);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add_s", ListAdd<string>, PigeonType.StringList, PigeonType.String);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add_b", ListAdd<bool>, PigeonType.BoolList, PigeonType.Bool);
-            builtinBag.Register(globalScope);
+            builtinBag.PopulateGlobalScope(globalScope);
 
             var functionDeclarator = new FunctionDeclarator(errorBag, globalScope);
             walker.Walk(functionDeclarator, tree);

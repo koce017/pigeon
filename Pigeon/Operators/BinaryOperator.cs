@@ -37,7 +37,7 @@ namespace Kostic017.Pigeon.Operators
             return false;
         }
 
-        private static readonly Dictionary<string, BinaryOperator[]> operators = new Dictionary<string, BinaryOperator[]>
+        private static readonly Dictionary<string, BinaryOperator[]> operators = new()
         {
             {
                 "+",

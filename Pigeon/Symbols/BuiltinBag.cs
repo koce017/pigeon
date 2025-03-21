@@ -8,7 +8,7 @@ namespace Kostic017.Pigeon.Symbols
         private readonly Dictionary<string, Variable> variables = [];
         private readonly Dictionary<string, Function> functions = [];
 
-        internal void Register(GlobalScope globalScope)
+        internal void PopulateGlobalScope(GlobalScope globalScope)
         {
             foreach (var v in variables.Values)
                 globalScope.DeclareVariable(v.Type, v.Name, v.ReadOnly, v.Value);

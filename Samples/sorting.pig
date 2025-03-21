@@ -1,14 +1,14 @@
 let a = int[];
 let size = prompt_i("size: ");
 
-for i = 1 to size
-    list_add(a, prompt_i("a[" + (i - 1) + "]"));
+for i = 0 to size - 1
+    list_add_i(a, prompt_i("a[" + i + "]: "));
 
 for i = 0 to size - 2
 {
     for j = i to size - 1
     {
-        if (a[i] < a[j])
+        if (a[i] > a[j])
         {
             let temp = a[i];
             a[i] = a[j];

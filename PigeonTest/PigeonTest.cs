@@ -1,4 +1,5 @@
 ﻿using Kostic017.Pigeon.Symbols;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -37,7 +38,7 @@ namespace Kostic017.Pigeon.Tests
 
                     Execute(code);
 
-                    Assert.Equal(outputs[i], Output());
+                    Assert.Equal(outputs[i], ActualOutput());
                     
                 }
             }
@@ -45,7 +46,7 @@ namespace Kostic017.Pigeon.Tests
             {
                 outputStream = new StringWriter();
                 Execute(code);
-                Assert.Equal(outputs[0], Output());
+                Assert.Equal(outputs[0], ActualOutput());
             }
         }
 
@@ -55,7 +56,7 @@ namespace Kostic017.Pigeon.Tests
                 yield return new string[] { Path.GetFileNameWithoutExtension(sample) };
         }
 
-        private string Output()
+        private string ActualOutput()
         {
             return Normalize(outputStream.ToString());
         }

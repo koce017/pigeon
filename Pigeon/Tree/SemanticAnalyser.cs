@@ -135,14 +135,14 @@ namespace Kostic017.Pigeon
         public override void ExitVarAssign([NotNull] PigeonParser.VarAssignContext context)
         {
             var varName = context.varAssignLhs().ID().GetText();
-            var varType = Types.Get(context.expr());
-            
+            var valType = Types.Get(context.expr());
+
             if (scope.TryGetVariable(varName, out var variable))
             {
                 if (variable.ReadOnly)
                     errorBag.ReportRedefiningReadOnlyVariable(context.GetTextSpan(), varName);
-                if (!AssignmentOperator.IsAssignable(context.op.Text, variable.Type, varType))
-                    errorBag.ReportInvalidTypeAssignment(context.GetTextSpan(), varName, variable.Type, varType);
+                if (!AssignmentOperator.IsAssignable(context.op.Text, variable.Type, valType))
+                    errorBag.ReportInvalidTypeAssignment(context.GetTextSpan(), varName, variable.Type, valType);
             }
             else
                 errorBag.ReportUndeclaredVariable(context.GetTextSpan(), varName);
@@ -253,7 +253,24 @@ namespace Kostic017.Pigeon
 
         public override void ExitListElementExpression([NotNull] PigeonParser.ListElementExpressionContext context)
         {
-            Types.Put(context, PigeonType.Any);
+            var name = context.ID().GetText();
+            if (scope.TryGetVariable(name, out var variable))
+            {
+                var type = variable.Type.Name switch
+                {
+                    "int[]" => PigeonType.Int,
+                    "float[]" => PigeonType.Float,
+                    "string[]" => PigeonType.String,
+                    "bool[]" => PigeonType.Bool,
+                    _ => throw new InternalErrorException($"Unsupported list type {variable.Type.Name}"),
+                };
+                Types.Put(context, type);
+            }
+            else
+            {
+                Types.Put(context, PigeonType.Error);
+                errorBag.ReportUndeclaredVariable(context.GetTextSpan(), name);
+            }
         }
 
         public override void ExitReturnStatement([NotNull] PigeonParser.ReturnStatementContext context)

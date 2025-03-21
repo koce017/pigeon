@@ -214,16 +214,16 @@ namespace Kostic017.Pigeon
             
             switch (analyser.Types.Get(context).Name)
             {
-                case "int[]":
+                case "int":
                     CheckBounds(index, (List<int>) list, context.GetTextSpan().Line);
                     return ((List<int>) list)[index];
-                case "fliat[]":
+                case "float":
                     CheckBounds(index, (List<float>) list, context.GetTextSpan().Line);
                     return ((List<float>) list)[index];
-                case "string[]":
+                case "string":
                     CheckBounds(index, (List<string>) list, context.GetTextSpan().Line);
                     return ((List<string>) list)[index];
-                case "bool[]":
+                case "bool":
                     CheckBounds(index, (List<bool>) list, context.GetTextSpan().Line);
                     return ((List<bool>) list)[index];
                 default:
@@ -371,10 +371,31 @@ namespace Kostic017.Pigeon
                 case "=":
                     if (context.varAssignLhs().index != null)
                     {
-                        var list = (List<object>) functionScopes.Peek().Evaluate(name);
-                        int index = (int) Visit(context.varAssignLhs().expr());
-                        CheckBounds(index, list, context.GetTextSpan().Line);
-                        list[index] = value;
+                        object list = functionScopes.Peek().Evaluate(name);
+                        int index = (int)Visit(context.varAssignLhs().expr());
+
+                        switch (type.Name)
+                        {
+                            case "int":
+                                CheckBounds(index, (List<int>) list, context.GetTextSpan().Line);
+                                ((List<int> )list)[index] = (int) value;
+                                break;
+                            case "float":
+                                CheckBounds(index, (List<float>) list, context.GetTextSpan().Line);
+                                ((List<float>) list)[index] = (float) value;
+                                break;
+                            case "string":
+                                CheckBounds(index, (List<string>) list, context.GetTextSpan().Line);
+                                ((List<string>) list)[index] = (string)  value;
+                                break;
+                            case "bool":
+                                CheckBounds(index, (List<bool>) list, context.GetTextSpan().Line);
+                                ((List<bool>) list)[index] = (bool) value;
+                                break;
+                            default:
+                                throw new InternalErrorException($"Unsupported list type {type.Name}");
+                        }
+                        
                     }
                     else 
                         Assign(name, value);
