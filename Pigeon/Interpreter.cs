@@ -35,14 +35,14 @@ namespace Kostic017.Pigeon
             var globalScope = new GlobalScope();
 
             // TODO: Method overloading
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count_i", ListCount<int>, PigeonType.IntList);
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count_f", ListCount<float>, PigeonType.FloatList);
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count_s", ListCount<string>, PigeonType.StringList);
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count_b", ListCount<bool>, PigeonType.BoolList);
-            builtinBag.RegisterFunction(PigeonType.Void, "list_add_i", ListAdd<int>, PigeonType.IntList, PigeonType.Int);
-            builtinBag.RegisterFunction(PigeonType.Void, "list_add_f", ListAdd<float>, PigeonType.FloatList, PigeonType.Float);
-            builtinBag.RegisterFunction(PigeonType.Void, "list_add_s", ListAdd<string>, PigeonType.StringList, PigeonType.String);
-            builtinBag.RegisterFunction(PigeonType.Void, "list_add_b", ListAdd<bool>, PigeonType.BoolList, PigeonType.Bool);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count_i", ListCount, PigeonType.IntList);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count_f", ListCount, PigeonType.FloatList);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count_s", ListCount, PigeonType.StringList);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count_b", ListCount, PigeonType.BoolList);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add_i", ListAdd, PigeonType.IntList, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add_f", ListAdd, PigeonType.FloatList, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add_s", ListAdd, PigeonType.StringList, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add_b", ListAdd, PigeonType.BoolList, PigeonType.Bool);
             builtinBag.PopulateGlobalScope(globalScope);
 
             var functionDeclarator = new FunctionDeclarator(errorBag, globalScope);
@@ -75,16 +75,16 @@ namespace Kostic017.Pigeon
                 writer.WriteLine(error.ToString());
         }
 
-        private static object ListCount<T>(object[] args)
+        private static object ListCount(object[] args)
         {
-            var list = (List<T>) args[0];
+            var list = (List<object>) args[0];
             return list.Count;
         }
 
-        private static object ListAdd<T>(object[] args)
+        private static object ListAdd(object[] args)
         {
-            var list = (List<T>) args[0];
-            list.Add((T) args[1]);
+            var list = (List<object>) args[0];
+            list.Add(args[1]);
             return null;
         }
     }

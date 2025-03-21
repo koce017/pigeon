@@ -85,76 +85,94 @@ namespace Kostic017.Pigeon
             var name = context.varAssignLhs().ID().GetText();
             var value = Visit(context.expr());
             var type = analyser.Types.Get(context.expr());
-            var currentValue = functionScopes.Peek().Evaluate(name);
 
-            switch (context.op.Text)
+            if (context.varAssignLhs().index == null)
             {
-                case "=":
-                    if (context.varAssignLhs().index != null)
-                    {
-                        object list = functionScopes.Peek().Evaluate(name);
-                        int index = (int)Visit(context.varAssignLhs().expr());
+                var currentValue = functionScopes.Peek().Evaluate(name);
 
-                        switch (type.Name)
-                        {
-                            case "int":
-                                CheckBounds(index, (List<int>)list, context.GetTextSpan().Line);
-                                ((List<int>)list)[index] = (int)value;
-                                break;
-                            case "float":
-                                CheckBounds(index, (List<float>)list, context.GetTextSpan().Line);
-                                ((List<float>)list)[index] = (float)value;
-                                break;
-                            case "string":
-                                CheckBounds(index, (List<string>)list, context.GetTextSpan().Line);
-                                ((List<string>)list)[index] = (string)value;
-                                break;
-                            case "bool":
-                                CheckBounds(index, (List<bool>)list, context.GetTextSpan().Line);
-                                ((List<bool>)list)[index] = (bool)value;
-                                break;
-                            default:
-                                throw new InternalErrorException($"Unsupported list type {type.Name}");
-                        }
-
-                    }
-                    else
+                switch (context.op.Text)
+                {
+                    case "=":
                         Assign(name, value);
-                    break;
+                        break;
 
-                case "+=":
-                    if (type == PigeonType.Int)
-                        Assign(name, (int)currentValue + (int)value);
-                    else if (type == PigeonType.Float)
-                        Assign(name, (float)currentValue + (float)value);
-                    else
-                        Assign(name, (string)currentValue + (string)value);
-                    break;
+                    case "+=":
+                        if (type == PigeonType.Int)
+                            Assign(name, (int)currentValue + (int)value);
+                        else if (type == PigeonType.Float)
+                            Assign(name, (float)currentValue + (float)value);
+                        else
+                            Assign(name, (string)currentValue + (string)value);
+                        break;
 
-                case "-=":
-                    if (type == PigeonType.Int)
-                        Assign(name, (int)currentValue - (int)value);
-                    else if (type == PigeonType.Float)
-                        Assign(name, (float)currentValue - (float)value);
-                    break;
+                    case "-=":
+                        if (type == PigeonType.Int)
+                            Assign(name, (int)currentValue - (int)value);
+                        else if (type == PigeonType.Float)
+                            Assign(name, (float)currentValue - (float)value);
+                        break;
 
-                case "*=":
-                    if (type == PigeonType.Int)
-                        Assign(name, (int)currentValue * (int)value);
-                    else if (type == PigeonType.Float)
-                        Assign(name, (float)currentValue * (float)value);
-                    break;
+                    case "*=":
+                        if (type == PigeonType.Int)
+                            Assign(name, (int)currentValue * (int)value);
+                        else if (type == PigeonType.Float)
+                            Assign(name, (float)currentValue * (float)value);
+                        break;
 
-                case "/=":
-                    if (type == PigeonType.Int)
-                        Assign(name, (int)currentValue / (int)value);
-                    else if (type == PigeonType.Float)
-                        Assign(name, (float)currentValue / (float)value);
-                    break;
+                    case "/=":
+                        if (type == PigeonType.Int)
+                            Assign(name, (int)currentValue / (int)value);
+                        else if (type == PigeonType.Float)
+                            Assign(name, (float)currentValue / (float)value);
+                        break;
 
-                case "%=":
-                    Assign(name, (int)currentValue % (int)value);
-                    break;
+                    case "%=":
+                        Assign(name, (int)currentValue % (int)value);
+                        break;
+                }
+            }
+            else
+            {
+                var list = (List<object>)functionScopes.Peek().Evaluate(name);
+                int index = (int)Visit(context.varAssignLhs().expr());
+                CheckBounds(index, list, context.GetTextSpan().Line);
+
+                switch (context.op.Text)
+                {
+                    case "=":
+                        list[index] = value;
+                        break;
+                    case "+=":
+                        if (type == PigeonType.Int)
+                            list[index] = (int)list[index] + (int)value;
+                        else if (type == PigeonType.Float)
+                            list[index] = (float)list[index] + (float)value;
+                        else
+                            list[index] = (string)list[index] + (string)value;
+                        break;
+                    case "-=":
+                        if (type == PigeonType.Int)
+                            list[index] = (int)list[index] - (int)value;
+                        else if (type == PigeonType.Float)
+                            list[index] = (float)list[index] - (float)value;
+                        break;
+                    case "*=":
+                        if (type == PigeonType.Int)
+                            list[index] = (int)list[index] * (int)value;
+                        else if (type == PigeonType.Float)
+                            list[index] = (float)list[index] * (float)value;
+                        break;
+                    case "/=":
+                        if (type == PigeonType.Int)
+                            list[index] = (int)list[index] / (int)value;
+                        else if (type == PigeonType.Float)
+                            list[index] = (float)list[index] / (float)value;
+                        break;
+                    case "%=":
+                        list[index] = (int)list[index] % (int)value;
+                        break;
+                }
+
             }
 
             return null;
@@ -256,26 +274,9 @@ namespace Kostic017.Pigeon
         public override object VisitListElementExpression([NotNull] PigeonParser.ListElementExpressionContext context)
         {
             int index = (int)Visit(context.expr());
-            var list = functionScopes.Peek().Evaluate(context.ID().GetText());
-
-            switch (analyser.Types.Get(context).Name)
-            {
-                case "int":
-                    CheckBounds(index, (List<int>)list, context.GetTextSpan().Line);
-                    return ((List<int>)list)[index];
-                case "float":
-                    CheckBounds(index, (List<float>)list, context.GetTextSpan().Line);
-                    return ((List<float>)list)[index];
-                case "string":
-                    CheckBounds(index, (List<string>)list, context.GetTextSpan().Line);
-                    return ((List<string>)list)[index];
-                case "bool":
-                    CheckBounds(index, (List<bool>)list, context.GetTextSpan().Line);
-                    return ((List<bool>)list)[index];
-                default:
-                    throw new InternalErrorException($"Unsupported list type {analyser.Types.Get(context).Name} at line {context.GetTextSpan().Line}");
-
-            }
+            var list = (List<object>)functionScopes.Peek().Evaluate(context.ID().GetText());
+            CheckBounds(index, list, context.GetTextSpan().Line);
+            return list[index];
         }
 
         public override object VisitNumberLiteral([NotNull] PigeonParser.NumberLiteralContext context)
@@ -297,22 +298,22 @@ namespace Kostic017.Pigeon
 
         public override object VisitEmptyIntListLiteral([NotNull] PigeonParser.EmptyIntListLiteralContext context)
         {
-            return new List<int>();
+            return new List<object>();
         }
 
         public override object VisitEmptyFloatListLiteral([NotNull] PigeonParser.EmptyFloatListLiteralContext context)
         {
-            return new List<float>();
+            return new List<object>();
         }
 
         public override object VisitEmptyStringListLiteral([NotNull] PigeonParser.EmptyStringListLiteralContext context)
         {
-            return new List<string>();
+            return new List<object>();
         }
 
         public override object VisitEmptyBoolListLiteral([NotNull] PigeonParser.EmptyBoolListLiteralContext context)
         {
-            return new List<bool>();
+            return new List<object>();
         }
 
         public override object VisitEmptySetLiteral([NotNull] PigeonParser.EmptySetLiteralContext context)
@@ -476,7 +477,7 @@ namespace Kostic017.Pigeon
             functionScopes.Peek().Assign(name, value);
         }
 
-        private static void CheckBounds<T>(int index, List<T> list, int line)
+        private static void CheckBounds(int index, List<object> list, int line)
         {
             if (index < 0 || index >= list.Count)
                 throw new EvaluatorException($"Index {index} out of bounds for length {list.Count} at line {line}");
