@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Kostic017.Pigeon.Symbols
 {
@@ -12,8 +13,9 @@ namespace Kostic017.Pigeon.Symbols
 
         internal Function DeclareFunction(PigeonType returnType, string name, Variable[] parameters, object funcBody)
         {
+            string signature = name + "(" + string.Join(", ", parameters.Select(p => p.Type.Name)) + ")";
             var function = new Function(returnType, name, parameters, funcBody);
-            functions.Add(function.Name, function);
+            functions.Add(signature, function);
             return function;
         }
 

@@ -4,6 +4,7 @@ using Kostic017.Pigeon.Symbols;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Kostic017.Pigeon
 {
@@ -428,13 +429,20 @@ namespace Kostic017.Pigeon
 
         public override object VisitFunctionCall([NotNull] PigeonParser.FunctionCallContext context)
         {
-            analyser.GlobalScope.TryGetFunction(context.ID().GetText(), out var function);
-
+            
             var argValues = new List<object>();
+            var argTypes = new List<PigeonType>();
 
             if (context.functionArgs() != null)
+            {
                 foreach (var arg in context.functionArgs().expr())
                     argValues.Add(Visit(arg));
+                foreach (var arg in context.functionArgs().expr())
+                    argTypes.Add(analyser.Types.Get(arg));
+            }
+
+            string signature = context.ID().GetText() + "(" + string.Join(", ", argTypes.Select(a => a.Name)) + ")";
+            analyser.GlobalScope.TryGetFunction(signature, out var function);
 
             if (function.FuncBody is FuncPointer fp)
                 return fp(argValues.ToArray());

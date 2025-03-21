@@ -35,14 +35,14 @@ namespace Kostic017.Pigeon
             var globalScope = new GlobalScope();
 
             // TODO: Method overloading
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count_i", ListCount, PigeonType.IntList);
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count_f", ListCount, PigeonType.FloatList);
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count_s", ListCount, PigeonType.StringList);
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count_b", ListCount, PigeonType.BoolList);
-            builtinBag.RegisterFunction(PigeonType.Void, "list_add_i", ListAdd, PigeonType.IntList, PigeonType.Int);
-            builtinBag.RegisterFunction(PigeonType.Void, "list_add_f", ListAdd, PigeonType.FloatList, PigeonType.Float);
-            builtinBag.RegisterFunction(PigeonType.Void, "list_add_s", ListAdd, PigeonType.StringList, PigeonType.String);
-            builtinBag.RegisterFunction(PigeonType.Void, "list_add_b", ListAdd, PigeonType.BoolList, PigeonType.Bool);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.IntList);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.FloatList);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.StringList);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.BoolList);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.IntList, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.FloatList, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.StringList, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.BoolList, PigeonType.Bool);
             builtinBag.PopulateGlobalScope(globalScope);
 
             var functionDeclarator = new FunctionDeclarator(errorBag, globalScope);

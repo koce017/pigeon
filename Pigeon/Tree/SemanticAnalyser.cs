@@ -4,6 +4,9 @@ using Antlr4.Runtime.Tree;
 using Kostic017.Pigeon.Errors;
 using Kostic017.Pigeon.Symbols;
 using Kostic017.Pigeon.Operators;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace Kostic017.Pigeon
 {
@@ -29,7 +32,13 @@ namespace Kostic017.Pigeon
         public override void EnterFunctionDecl([NotNull] PigeonParser.FunctionDeclContext context)
         {
             scope = new Scope(GlobalScope);
-            GlobalScope.TryGetFunction(context.ID().GetText(), out var function);
+            
+            var argTypes = new List<PigeonType>();
+            foreach (var arg in context.functionParams().TYPE())
+                argTypes.Add(PigeonType.FromName(arg.GetText()));
+            string signature = $"{context.ID().GetText()}({string.Join(", ", argTypes.Select(a => a.Name))})";
+            
+            GlobalScope.TryGetFunction(signature, out var function);
             foreach (var parameter in function.Parameters)
                 scope.DeclareVariable(parameter.Type, parameter.Name, parameter.ReadOnly);
         }
@@ -41,11 +50,14 @@ namespace Kostic017.Pigeon
 
         public override void ExitFunctionCall([NotNull] PigeonParser.FunctionCallContext context)
         {
-            var functionName = context.ID().GetText();
+            var argTypes = new List<PigeonType>();
+            foreach (var arg in context.functionArgs().expr())
+                argTypes.Add(Types.Get(arg));
+            string signature = $"{context.ID().GetText()}({string.Join(", ", argTypes.Select(a => a.Name))})";
 
-            if (!GlobalScope.TryGetFunction(functionName, out var function))
+            if (!GlobalScope.TryGetFunction(signature, out var function))
             {
-                errorBag.ReportUndeclaredFunction(context.GetTextSpan(), functionName);
+                errorBag.ReportUndeclaredFunction(context.GetTextSpan(), signature);
                 return;
             }
 
@@ -53,7 +65,7 @@ namespace Kostic017.Pigeon
 
             if (argumentCount != function.Parameters.Length)
             {
-                errorBag.ReportInvalidNumberOfArguments(context.GetTextSpan(), functionName, function.Parameters.Length);
+                errorBag.ReportInvalidNumberOfArguments(context.GetTextSpan(), signature, function.Parameters.Length);
                 return;
             }
 
@@ -155,8 +167,15 @@ namespace Kostic017.Pigeon
             while (node is not PigeonParser.FunctionDeclContext)
                 node = node.Parent;
 
-            var functionName = ((PigeonParser.FunctionDeclContext)node).ID().GetText();
-            GlobalScope.TryGetFunction(functionName, out var function);
+            var n = ((PigeonParser.FunctionDeclContext)node);
+            var functionName = n.ID().GetText();
+            
+            var argTypes = new List<PigeonType>();
+            foreach (var arg in n.functionParams().TYPE())
+                argTypes.Add(PigeonType.FromName(arg.GetText()));
+            string signature = functionName + "(" + string.Join(", ", argTypes.Select(a => a.Name)) + ")";
+
+            GlobalScope.TryGetFunction(signature, out var function);
 
             if (returnType != function.ReturnType)
                 if (!NumberTypes(returnType, function.ReturnType))
@@ -247,14 +266,21 @@ namespace Kostic017.Pigeon
         public override void ExitFunctionCallExpression([NotNull] PigeonParser.FunctionCallExpressionContext context)
         {
             var functionName = context.functionCall().ID().GetText();
-            if (GlobalScope.TryGetFunction(functionName, out var function))
+
+            var argTypes = new List<PigeonType>();
+            foreach (var arg in context.functionCall().functionArgs().expr())
+                argTypes.Add(Types.Get(arg));
+
+            string signature = functionName + "(" + string.Join(", ", argTypes.Select(a => a.Name)) + ")";
+
+            if (GlobalScope.TryGetFunction(signature, out var function))
             {
                 Types.Put(context, function.ReturnType);
             }
             else
             {
                 Types.Put(context, PigeonType.Error);
-                errorBag.ReportUndeclaredFunction(context.GetTextSpan(), functionName);
+                errorBag.ReportUndeclaredFunction(context.GetTextSpan(), signature);
             }
         }
 
