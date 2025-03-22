@@ -34,7 +34,7 @@ namespace Kostic017.Pigeon.Operators
             return whenTrueType == whenTrue && whenFalseType == whenFalse;
         }
 
-        private static readonly TernaryOperator[] combinations = new TernaryOperator[]
+        private static readonly TernaryOperator[] combinations = new[]
         {
             new TernaryOperator(PigeonType.Int, PigeonType.Int, PigeonType.Int),
             new TernaryOperator(PigeonType.Int, PigeonType.Float, PigeonType.Float),

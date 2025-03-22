@@ -12,26 +12,15 @@ namespace Kostic017.Pigeon.Tests
         private static readonly string SamplesFolder = "../../../../Samples";
         private static readonly string TestsFolder = "../../../Tests";
 
-        private TextWriter outputStream;
+        private StringWriter outputStream;
         private Queue<string> inputStream;
-        
-        private readonly Builtins b = new Builtins();
-
-        public PigeonTest()
-        {
-            b.RegisterFunction(PigeonType.String, "prompt", Prompt, PigeonType.String);
-            b.RegisterFunction(PigeonType.Int, "prompt_i", PromptI, PigeonType.String);
-            b.RegisterFunction(PigeonType.Float, "prompt_f", PromptF, PigeonType.String);
-            b.RegisterFunction(PigeonType.Bool, "prompt_b", PromptB, PigeonType.String);
-            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Any);
-        }
 
         [Theory]
         [MemberData(nameof(TestCases))]
         public void Test(string sample)
         {
             var inFile = Path.Combine(TestsFolder, sample + ".in");
-            var code = Normalize(File.ReadAllText(Path.Combine(SamplesFolder, sample + ".pig")));
+            var code = NormalizeWhitespace(File.ReadAllText(Path.Combine(SamplesFolder, sample + ".pig")));
             var outputs = ReadCases(Path.Combine(TestsFolder, sample + ".out"));
 
             if (File.Exists(inFile))
@@ -48,7 +37,7 @@ namespace Kostic017.Pigeon.Tests
 
                     Execute(code);
 
-                    Assert.Equal(outputs[i], Output());
+                    Assert.Equal(outputs[i], ActualOutput());
                     
                 }
             }
@@ -56,7 +45,7 @@ namespace Kostic017.Pigeon.Tests
             {
                 outputStream = new StringWriter();
                 Execute(code);
-                Assert.Equal(outputs[0], Output());
+                Assert.Equal(outputs[0], ActualOutput());
             }
         }
 
@@ -66,52 +55,66 @@ namespace Kostic017.Pigeon.Tests
                 yield return new string[] { Path.GetFileNameWithoutExtension(sample) };
         }
 
-        private string Output()
+        private string ActualOutput()
         {
-            return Normalize(outputStream.ToString());
+            return NormalizeWhitespace(outputStream.ToString());
         }
 
-        private string[] ReadCases(string file)
+        private static string[] ReadCases(string file)
         {
-            return Normalize(File.ReadAllText(file)).Split("---").Select(v => v.Trim()).ToArray();
+            return NormalizeWhitespace(File.ReadAllText(file)).Split("---").Select(v => v.Trim()).ToArray();
         }
 
-        private string Normalize(string str)
+        private static string NormalizeWhitespace(string str)
         {
             return str.Replace("\r\n", "\n").Trim();
         }
 
         private void Execute(string code)
         {
+            var b = new BuiltinBag();
+            b.RegisterFunction(PigeonType.Int, "prompt_i", PromptI, PigeonType.String);
+            b.RegisterFunction(PigeonType.Float, "prompt_f", PromptF, PigeonType.String);
+            b.RegisterFunction(PigeonType.String, "prompt_s", PromptS, PigeonType.String);
+            b.RegisterFunction(PigeonType.Bool, "prompt_b", PromptB, PigeonType.String);
+            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Int);
+            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Float);
+            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.String);
+            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Bool);
+
             var interpreter = new Interpreter(code, b);
             interpreter.PrintErr(outputStream);
             interpreter.Evaluate();
         }
 
-        private object Print(object[] arg)
+        private object Print(object[] args)
         {
-            outputStream.WriteLine(arg[0]);
+            if (args[0] is float f)
+                outputStream.WriteLine(f.ToString(CultureInfo.InvariantCulture));
+            else
+                outputStream.WriteLine(args[0]);
             return null;
         }
 
-        private object Prompt(object[] arg)
-        {
-            return inputStream.Dequeue();
-        }
-
-        private object PromptI(object[] arg)
+        private object PromptI(object[] args)
         {
             return int.Parse(inputStream.Dequeue());
         }
 
-        private object PromptF(object[] arg)
+        private object PromptF(object[] args)
         {
-            return float.Parse(inputStream.Dequeue(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+            return float.Parse(inputStream.Dequeue(), NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
         }
 
-        private object PromptB(object[] arg)
+        private object PromptS(object[] args)
+        {
+            return inputStream.Dequeue();
+        }
+
+        private object PromptB(object[] args)
         {
             return bool.Parse(inputStream.Dequeue());
         }
+
     }
 }

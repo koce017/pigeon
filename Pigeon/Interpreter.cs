@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Tree;
 using Kostic017.Pigeon.Errors;
 using Kostic017.Pigeon.Symbols;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Kostic017.Pigeon
@@ -15,7 +16,7 @@ namespace Kostic017.Pigeon
         private readonly CodeErrorBag errorBag;
         private readonly SemanticAnalyser analyser;
 
-        public Interpreter(string code, Builtins builtins)
+        public Interpreter(string code, BuiltinBag builtinBag)
         {
             errorBag = new CodeErrorBag();
             
@@ -29,11 +30,36 @@ namespace Kostic017.Pigeon
 
             if (!errorBag.IsEmpty())
                 return;
-         
+
             var walker = new ParseTreeWalker();
             var globalScope = new GlobalScope();
 
-            builtins.Register(globalScope);
+            builtinBag.RegisterVariable(PigeonType.String, "author", true, "Nikola Kostic Koce");
+
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.IntList);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.FloatList);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.StringList);
+            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.BoolList);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.IntList, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.FloatList, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.StringList, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.BoolList, PigeonType.Bool);
+
+            builtinBag.RegisterFunction(PigeonType.Bool, "set_in", SetIn, PigeonType.Set, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.Bool, "set_in", SetIn, PigeonType.Set, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Bool, "set_in", SetIn, PigeonType.Set, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Bool, "set_in", SetIn, PigeonType.Set, PigeonType.Bool);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_add", SetAdd, PigeonType.Set, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_add", SetAdd, PigeonType.Set, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_add", SetAdd, PigeonType.Set, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_add", SetAdd, PigeonType.Set, PigeonType.Bool);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_remove", SetRemove, PigeonType.Set, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_remove", SetRemove, PigeonType.Set, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_remove", SetRemove, PigeonType.Set, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_remove", SetRemove, PigeonType.Set, PigeonType.Bool);
+
+            builtinBag.PopulateGlobalScope(globalScope);
+
             var functionDeclarator = new FunctionDeclarator(errorBag, globalScope);
             walker.Walk(functionDeclarator, tree);
 
@@ -44,7 +70,7 @@ namespace Kostic017.Pigeon
         public void Evaluate()
         {
             if (!errorBag.IsEmpty())
-                throw new IllegalUsageException("Cannot evaluate because of parsing and other errors");
+                throw new EvaluatorException("Cannot evaluate because of parsing and other errors");
             new Evaluator(analyser).Visit(tree);
         }
 
@@ -62,6 +88,39 @@ namespace Kostic017.Pigeon
         {
             foreach (var error in errorBag)
                 writer.WriteLine(error.ToString());
+        }
+
+        private static object ListCount(object[] args)
+        {
+            var list = (List<object>) args[0];
+            return list.Count;
+        }
+
+        private static object ListAdd(object[] args)
+        {
+            var list = (List<object>) args[0];
+            list.Add(args[1]);
+            return null;
+        }
+
+        private static object SetIn(object[] args)
+        {
+            var set = (HashSet<object>)args[0];
+            return set.Contains(args[1]);
+        }
+
+        private static object SetAdd(object[] args)
+        {
+            var set = (HashSet<object>)args[0];
+            set.Add(args[1]);
+            return null;
+        }
+
+        private static object SetRemove(object[] args)
+        {
+            var set = (HashSet<object>)args[0];
+            set.Remove(args[1]);
+            return null;
         }
     }
 }

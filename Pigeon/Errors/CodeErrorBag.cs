@@ -6,7 +6,7 @@ namespace Kostic017.Pigeon.Errors
 {
     class CodeErrorBag : IEnumerable<CodeError>
     {
-        private readonly List<CodeError> errors = new List<CodeError>();
+        private readonly List<CodeError> errors = new();
 
         internal void Report(string message, TextSpan textSpan)
         {
@@ -76,6 +76,11 @@ namespace Kostic017.Pigeon.Errors
         internal void ReportStatementNotInLoop(TextSpan textSpan, string statement)
         {
             Report($"{statement} should be in a loop", textSpan);
+        }
+
+        internal void ReportOutOfBounds(TextSpan textSpan, int index, int length)
+        {
+            Report($"Index {index} out of bounds for length {length}", textSpan);
         }
 
         public IEnumerator<CodeError> GetEnumerator()

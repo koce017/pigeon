@@ -11,27 +11,32 @@ varDecl
     | keyword='const' ID '=' expr SEP
     ;
 
+varAssignLhs
+    : ID
+    | ID '[' index=expr ']'
+    ;
+
 varAssign
-    : ID op='=' expr SEP
-    | ID op='+=' expr SEP
-    | ID op='-=' expr SEP
-    | ID op='*=' expr SEP
-    | ID op='/=' expr SEP
-    | ID op='%=' expr SEP
-    | ID op='^=' expr SEP
+    : varAssignLhs op='=' expr SEP
+    | varAssignLhs op='+=' expr SEP
+    | varAssignLhs op='-=' expr SEP
+    | varAssignLhs op='*=' expr SEP
+    | varAssignLhs op='/=' expr SEP
+    | varAssignLhs op='%=' expr SEP
+    | varAssignLhs op='^=' expr SEP
     ;
 
 stmt
     : varDecl                                              # variableDeclarationStatement
     | varAssign                                            # variableAssignmentStatement
     | functionCall SEP                                     # functionCallStatement
-    | 'return' expr? SEP                                   # returnStatement
-    | 'break' SEP                                          # breakStatement
-    | 'continue' SEP                                       # continueStatement
+    | 'if' expr stmtBlock ('else' stmtBlock)?              # ifStatement
+    | 'for' ID '=' expr 'to' expr stmtBlock                # forStatement
     | 'while' expr stmtBlock                               # whileStatement
     | 'do' stmtBlock 'while' expr                          # doWhileStatement
-    | 'if' expr stmtBlock ('else' stmtBlock)?              # ifStatement
-    | 'for' ID '=' expr dir=('to'|'downto') expr stmtBlock # forStatement
+    | 'break' SEP                                          # breakStatement
+    | 'continue' SEP                                       # continueStatement
+    | 'return' expr? SEP                                   # returnStatement
     ;
 
 stmtBlock
@@ -42,9 +47,15 @@ stmtBlock
 
 expr
     : ID                                  # variableExpression
-    | BOOL                                # boolLiteral
+    | ID '[' index=expr ']'               # listElementExpression
     | NUMBER                              # numberLiteral
     | STRING                              # stringLiteral
+    | BOOL                                # boolLiteral
+    | 'int[]'                             # emptyIntListLiteral
+    | 'float[]'                           # emptyFloatListLiteral
+    | 'bool[]'                            # emptyBoolListLiteral
+    | 'string[]'                          # emptyStringListLiteral
+    | '{}'                                # emptySetLiteral
     | '(' expr ')'                        # parenthesizedExpression
     | functionCall                        # functionCallExpression
     | op='-' expr                         # unaryExpression
@@ -77,11 +88,16 @@ BOOL
     ;
 
 TYPE
-    : 'int'
+    : 'void'
+    | 'int'
     | 'float'
     | 'string'
     | 'bool'
-    | 'void'
+    | '[]int'
+    | '[]float'
+    | '[]string'
+    | '[]bool'
+    | 'set'
     ;
 
 NUMBER
