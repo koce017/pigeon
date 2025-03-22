@@ -48,10 +48,9 @@ namespace TestProject
                 return;
 
             var b = new BuiltinBag();
-            b.RegisterVariable(PigeonType.String, "author", true, "Nikola Kostic Koce");
-            b.RegisterFunction(PigeonType.String, "prompt", Prompt, PigeonType.String);
             b.RegisterFunction(PigeonType.Int, "prompt_i", PromptI, PigeonType.String);
             b.RegisterFunction(PigeonType.Float, "prompt_f", PromptF, PigeonType.String);
+            b.RegisterFunction(PigeonType.String, "prompt_s", PromptS, PigeonType.String);
             b.RegisterFunction(PigeonType.Bool, "prompt_b", PromptB, PigeonType.String);
             b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Int);
             b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Float);
@@ -110,12 +109,6 @@ namespace TestProject
             return null;
         }
 
-        private object Prompt(object[] args)
-        {
-            Console.Write(args[0]);
-            return Console.ReadLine();
-        }
-
         private object PromptI(object[] args)
         {
             Console.Write(args[0]);
@@ -126,6 +119,12 @@ namespace TestProject
         {
             Console.Write(args[0]);
             return float.Parse(Console.ReadLine(), NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+        }
+
+        private object PromptS(object[] args)
+        {
+            Console.Write(args[0]);
+            return Console.ReadLine();
         }
 
         private object PromptB(object[] args)

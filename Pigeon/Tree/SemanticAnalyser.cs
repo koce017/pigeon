@@ -34,8 +34,10 @@ namespace Kostic017.Pigeon
             scope = new Scope(GlobalScope);
             
             var argTypes = new List<PigeonType>();
-            foreach (var arg in context.functionParams().TYPE())
-                argTypes.Add(PigeonType.FromName(arg.GetText()));
+            if (context.functionParams() != null)
+                foreach (var arg in context.functionParams().TYPE())
+                    argTypes.Add(PigeonType.FromName(arg.GetText()));
+
             string signature = $"{context.ID().GetText()}({string.Join(", ", argTypes.Select(a => a.Name))})";
             
             GlobalScope.TryGetFunction(signature, out var function);
@@ -52,8 +54,10 @@ namespace Kostic017.Pigeon
         public override void ExitFunctionCall([NotNull] PigeonParser.FunctionCallContext context)
         {
             var argTypes = new List<PigeonType>();
-            foreach (var arg in context.functionArgs().expr())
-                argTypes.Add(Types.Get(arg));
+            if (context.functionArgs() != null)
+                foreach (var arg in context.functionArgs().expr())
+                    argTypes.Add(Types.Get(arg));
+            
             string signature = $"{context.ID().GetText()}({string.Join(", ", argTypes.Select(a => a.Name))})";
 
             if (!GlobalScope.TryGetFunction(signature, out var function))
@@ -172,8 +176,10 @@ namespace Kostic017.Pigeon
             var functionName = n.ID().GetText();
             
             var argTypes = new List<PigeonType>();
-            foreach (var arg in n.functionParams().TYPE())
-                argTypes.Add(PigeonType.FromName(arg.GetText()));
+            if (n.functionParams() != null)
+                foreach (var arg in n.functionParams().TYPE())
+                    argTypes.Add(PigeonType.FromName(arg.GetText()));
+            
             string signature = functionName + "(" + string.Join(", ", argTypes.Select(a => a.Name)) + ")";
 
             GlobalScope.TryGetFunction(signature, out var function);
@@ -269,8 +275,10 @@ namespace Kostic017.Pigeon
             var functionName = context.functionCall().ID().GetText();
 
             var argTypes = new List<PigeonType>();
-            foreach (var arg in context.functionCall().functionArgs().expr())
-                argTypes.Add(Types.Get(arg));
+            if (context.functionCall().functionArgs() != null)
+                foreach (var arg in context.functionCall().functionArgs().expr())
+                    argTypes.Add(Types.Get(arg));
+
             string signature = functionName + "(" + string.Join(", ", argTypes.Select(a => a.Name)) + ")";
 
             if (GlobalScope.TryGetFunction(signature, out var function))

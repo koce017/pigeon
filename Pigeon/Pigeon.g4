@@ -55,7 +55,7 @@ expr
     | 'float[]'                           # emptyFloatListLiteral
     | 'bool[]'                            # emptyBoolListLiteral
     | 'string[]'                          # emptyStringListLiteral
-    | '{/}'                               # emptySetLiteral
+    | '{}'                                # emptySetLiteral
     | '(' expr ')'                        # parenthesizedExpression
     | functionCall                        # functionCallExpression
     | op='-' expr                         # unaryExpression

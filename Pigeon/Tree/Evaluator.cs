@@ -436,9 +436,10 @@ namespace Kostic017.Pigeon
             if (context.functionArgs() != null)
             {
                 foreach (var arg in context.functionArgs().expr())
+                {
                     argValues.Add(Visit(arg));
-                foreach (var arg in context.functionArgs().expr())
                     argTypes.Add(analyser.Types.Get(arg));
+                }
             }
 
             string signature = context.ID().GetText() + "(" + string.Join(", ", argTypes.Select(a => a.Name)) + ")";

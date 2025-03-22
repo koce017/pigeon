@@ -73,9 +73,9 @@ namespace Kostic017.Pigeon.Tests
         private void Execute(string code)
         {
             var b = new BuiltinBag();
-            b.RegisterFunction(PigeonType.String, "prompt", Prompt, PigeonType.String);
             b.RegisterFunction(PigeonType.Int, "prompt_i", PromptI, PigeonType.String);
             b.RegisterFunction(PigeonType.Float, "prompt_f", PromptF, PigeonType.String);
+            b.RegisterFunction(PigeonType.String, "prompt_s", PromptS, PigeonType.String);
             b.RegisterFunction(PigeonType.Bool, "prompt_b", PromptB, PigeonType.String);
             b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Int);
             b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Float);
@@ -96,11 +96,6 @@ namespace Kostic017.Pigeon.Tests
             return null;
         }
 
-        private object Prompt(object[] args)
-        {
-            return inputStream.Dequeue();
-        }
-
         private object PromptI(object[] args)
         {
             return int.Parse(inputStream.Dequeue());
@@ -111,9 +106,15 @@ namespace Kostic017.Pigeon.Tests
             return float.Parse(inputStream.Dequeue(), NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
         }
 
+        private object PromptS(object[] args)
+        {
+            return inputStream.Dequeue();
+        }
+
         private object PromptB(object[] args)
         {
             return bool.Parse(inputStream.Dequeue());
         }
+
     }
 }

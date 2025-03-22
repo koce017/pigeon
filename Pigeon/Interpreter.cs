@@ -34,7 +34,8 @@ namespace Kostic017.Pigeon
             var walker = new ParseTreeWalker();
             var globalScope = new GlobalScope();
 
-            // TODO: Method overloading
+            builtinBag.RegisterVariable(PigeonType.String, "author", true, "Nikola Kostic Koce");
+
             builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.IntList);
             builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.FloatList);
             builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.StringList);
@@ -43,6 +44,20 @@ namespace Kostic017.Pigeon
             builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.FloatList, PigeonType.Float);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.StringList, PigeonType.String);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.BoolList, PigeonType.Bool);
+
+            builtinBag.RegisterFunction(PigeonType.Bool, "set_in", SetIn, PigeonType.Set, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.Bool, "set_in", SetIn, PigeonType.Set, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Bool, "set_in", SetIn, PigeonType.Set, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Bool, "set_in", SetIn, PigeonType.Set, PigeonType.Bool);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_add", SetAdd, PigeonType.Set, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_add", SetAdd, PigeonType.Set, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_add", SetAdd, PigeonType.Set, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_add", SetAdd, PigeonType.Set, PigeonType.Bool);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_remove", SetRemove, PigeonType.Set, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_remove", SetRemove, PigeonType.Set, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_remove", SetRemove, PigeonType.Set, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "set_remove", SetRemove, PigeonType.Set, PigeonType.Bool);
+
             builtinBag.PopulateGlobalScope(globalScope);
 
             var functionDeclarator = new FunctionDeclarator(errorBag, globalScope);
@@ -85,6 +100,26 @@ namespace Kostic017.Pigeon
         {
             var list = (List<object>) args[0];
             list.Add(args[1]);
+            return null;
+        }
+
+        private static object SetIn(object[] args)
+        {
+            var set = (HashSet<object>)args[0];
+            return set.Contains(args[1]);
+        }
+
+        private static object SetAdd(object[] args)
+        {
+            var set = (HashSet<object>)args[0];
+            set.Add(args[1]);
+            return null;
+        }
+
+        private static object SetRemove(object[] args)
+        {
+            var set = (HashSet<object>)args[0];
+            set.Remove(args[1]);
             return null;
         }
     }
