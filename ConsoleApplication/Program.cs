@@ -68,12 +68,7 @@ namespace TestProject
             Console.WriteLine();
             var name = Path.GetFileNameWithoutExtension(file);
             Console.WriteLine($"### {name} ###");
-            ExecuteCode(Normalize(File.ReadAllText(file)));
-        }
-
-        private static string Normalize(string str)
-        {
-            return str.Replace("\r\n", "\n").Trim();
+            ExecuteCode(NormalizeWhitespace(File.ReadAllText(file)));
         }
 
         private bool HandleCommand(string line)
@@ -98,34 +93,39 @@ namespace TestProject
             return true;
         }
 
-        private object Print(object[] arg)
+        private static string NormalizeWhitespace(string str)
         {
-            if (arg[0] is float f)
+            return str.Replace("\r\n", "\n").Trim();
+        }
+
+        private object Print(object[] args)
+        {
+            if (args[0] is float f)
                 Console.WriteLine(f.ToString(CultureInfo.InvariantCulture));
             else
-                Console.WriteLine(arg[0]);
+                Console.WriteLine(args[0]);
             return null;
         }
 
-        private static object Prompt(object[] args)
+        private object Prompt(object[] args)
         {
             Console.Write(args[0]);
             return Console.ReadLine();
         }
 
-        private static object PromptI(object[] args)
+        private object PromptI(object[] args)
         {
             Console.Write(args[0]);
             return int.Parse(Console.ReadLine());
         }
 
-        private static object PromptF(object[] args)
+        private object PromptF(object[] args)
         {
             Console.Write(args[0]);
             return float.Parse(Console.ReadLine(), NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
         }
 
-        private static object PromptB(object[] args)
+        private object PromptB(object[] args)
         {
             Console.Write(args[0]);
             return bool.Parse(Console.ReadLine());

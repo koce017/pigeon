@@ -491,7 +491,7 @@ namespace Kostic017.Pigeon
                 throw new EvaluatorException($"Index {index} out of bounds for length {list.Count} at line {line}");
         }
 
-        private static bool ShouldCreateScope(PigeonParser.StmtBlockContext context)
+        private  bool ShouldCreateScope(PigeonParser.StmtBlockContext context)
         {
             return context.Parent is not PigeonParser.ForStatementContext;
         }

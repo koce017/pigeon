@@ -39,6 +39,7 @@ namespace Kostic017.Pigeon
             string signature = $"{context.ID().GetText()}({string.Join(", ", argTypes.Select(a => a.Name))})";
             
             GlobalScope.TryGetFunction(signature, out var function);
+
             foreach (var parameter in function.Parameters)
                 scope.DeclareVariable(parameter.Type, parameter.Name, parameter.ReadOnly);
         }
@@ -270,7 +271,6 @@ namespace Kostic017.Pigeon
             var argTypes = new List<PigeonType>();
             foreach (var arg in context.functionCall().functionArgs().expr())
                 argTypes.Add(Types.Get(arg));
-
             string signature = functionName + "(" + string.Join(", ", argTypes.Select(a => a.Name)) + ")";
 
             if (GlobalScope.TryGetFunction(signature, out var function))

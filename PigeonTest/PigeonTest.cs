@@ -21,7 +21,7 @@ namespace Kostic017.Pigeon.Tests
         public void Test(string sample)
         {
             var inFile = Path.Combine(TestsFolder, sample + ".in");
-            var code = NormalizeNewLines(File.ReadAllText(Path.Combine(SamplesFolder, sample + ".pig")));
+            var code = NormalizeWhitespace(File.ReadAllText(Path.Combine(SamplesFolder, sample + ".pig")));
             var outputs = ReadCases(Path.Combine(TestsFolder, sample + ".out"));
 
             if (File.Exists(inFile))
@@ -58,15 +58,15 @@ namespace Kostic017.Pigeon.Tests
 
         private string ActualOutput()
         {
-            return NormalizeNewLines(outputStream.ToString());
+            return NormalizeWhitespace(outputStream.ToString());
         }
 
         private static string[] ReadCases(string file)
         {
-            return NormalizeNewLines(File.ReadAllText(file)).Split("---").Select(v => v.Trim()).ToArray();
+            return NormalizeWhitespace(File.ReadAllText(file)).Split("---").Select(v => v.Trim()).ToArray();
         }
 
-        private static string NormalizeNewLines(string str)
+        private static string NormalizeWhitespace(string str)
         {
             return str.Replace("\r\n", "\n").Trim();
         }
@@ -85,31 +85,31 @@ namespace Kostic017.Pigeon.Tests
             interpreter.Evaluate();
         }
 
-        private object Print(object[] arg)
+        private object Print(object[] args)
         {
-            if (arg[0] is float f)
+            if (args[0] is float f)
                 outputStream.WriteLine(f.ToString(CultureInfo.InvariantCulture));
             else
-                outputStream.WriteLine(arg[0]);
+                outputStream.WriteLine(args[0]);
             return null;
         }
 
-        private object Prompt(object[] arg)
+        private object Prompt(object[] args)
         {
             return inputStream.Dequeue();
         }
 
-        private object PromptI(object[] arg)
+        private object PromptI(object[] args)
         {
             return int.Parse(inputStream.Dequeue());
         }
 
-        private object PromptF(object[] arg)
+        private object PromptF(object[] args)
         {
             return float.Parse(inputStream.Dequeue(), NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
         }
 
-        private object PromptB(object[] arg)
+        private object PromptB(object[] args)
         {
             return bool.Parse(inputStream.Dequeue());
         }

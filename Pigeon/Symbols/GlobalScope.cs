@@ -19,9 +19,9 @@ namespace Kostic017.Pigeon.Symbols
             return function;
         }
 
-        internal bool TryGetFunction(string name, out Function function)
+        internal bool TryGetFunction(string signature, out Function function)
         {
-            if (functions.TryGetValue(name, out function))
+            if (functions.TryGetValue(signature, out function))
                 return true;
             return false;
         }
