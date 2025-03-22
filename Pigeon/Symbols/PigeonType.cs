@@ -20,6 +20,8 @@
         {
             return name switch
             {
+                "?" => Error,
+                "*" => Any,
                 "void" => Void,
                 "int" => Int,
                 "float" => Float,

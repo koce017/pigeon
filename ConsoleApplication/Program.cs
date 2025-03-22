@@ -53,7 +53,10 @@ namespace TestProject
             b.RegisterFunction(PigeonType.Int, "prompt_i", PromptI, PigeonType.String);
             b.RegisterFunction(PigeonType.Float, "prompt_f", PromptF, PigeonType.String);
             b.RegisterFunction(PigeonType.Bool, "prompt_b", PromptB, PigeonType.String);
-            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Any);
+            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Int);
+            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Float);
+            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.String);
+            b.RegisterFunction(PigeonType.Void, "print", Print, PigeonType.Bool);
 
             var interpreter = new Interpreter(code, b);
             if (printTree)
