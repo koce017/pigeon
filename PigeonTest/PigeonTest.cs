@@ -1,5 +1,4 @@
 ﻿using Kostic017.Pigeon.Symbols;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;

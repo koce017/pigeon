@@ -93,8 +93,10 @@ TYPE
     | 'float'
     | 'string'
     | 'bool'
-    | 'list'
-    | 'dict'
+    | '[]int'
+    | '[]float'
+    | '[]string'
+    | '[]bool'
     | 'set'
     ;
 

@@ -204,11 +204,11 @@ namespace Kostic017.Pigeon
             {
                 var type = variable.Type.Name switch
                 {
-                    "int[]" => PigeonType.Int,
-                    "float[]" => PigeonType.Float,
-                    "string[]" => PigeonType.String,
-                    "bool[]" => PigeonType.Bool,
-                    _ => throw new InternalErrorException($"Unsupported list type {variable.Type.Name}"),
+                    "[]int" => PigeonType.Int,
+                    "[]float" => PigeonType.Float,
+                    "[]string" => PigeonType.String,
+                    "[]bool" => PigeonType.Bool,
+                    _ => throw new InternalErrorException($"Unsupported list type {variable.Type.Name} at line {context.GetTextSpan().Line}"),
                 };
                 Types.Put(context, type);
             }
