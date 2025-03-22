@@ -13,7 +13,7 @@ namespace Kostic017.Pigeon.Tests
         private static readonly string SamplesFolder = "../../../../Samples";
         private static readonly string TestsFolder = "../../../Tests";
 
-        private TextWriter outputStream;
+        private StringWriter outputStream;
         private Queue<string> inputStream;
 
         [Theory]

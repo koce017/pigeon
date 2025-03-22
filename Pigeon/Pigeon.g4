@@ -31,7 +31,7 @@ stmt
     | varAssign                                            # variableAssignmentStatement
     | functionCall SEP                                     # functionCallStatement
     | 'if' expr stmtBlock ('else' stmtBlock)?              # ifStatement
-    | 'for' ID '=' expr dir=('to'|'downto') expr stmtBlock # forStatement
+    | 'for' ID '=' expr 'to' expr stmtBlock                # forStatement
     | 'while' expr stmtBlock                               # whileStatement
     | 'do' stmtBlock 'while' expr                          # doWhileStatement
     | 'break' SEP                                          # breakStatement

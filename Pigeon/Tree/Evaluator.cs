@@ -198,7 +198,7 @@ namespace Kostic017.Pigeon
             var startValue = (int)Visit(context.expr(0));
             var targetValue = (int)Visit(context.expr(1));
             var counter = context.ID().GetText();
-            var isIncrementing = context.dir.Text == "to";
+            var isIncrementing = targetValue >= startValue;
             var i = startValue;
 
             functionScopes.Peek().EnterScope();

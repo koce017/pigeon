@@ -2,7 +2,7 @@ let a = float[];
 let size = prompt_i("size: ");
 
 for i = 0 to size - 1
-    list_add_f(a, prompt_f("a[" + i + "]: "));
+    list_add(a, prompt_f("a[" + i + "]: "));
 
 for i = 0 to size - 2
 {

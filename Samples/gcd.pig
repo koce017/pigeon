@@ -5,7 +5,7 @@ print(r);
 
 int gcd(int a, int b) {
     let min = a < b ? a : b;
-    for i = min downto 1 {
+    for i = min to 1 {
         if (a % i == 0 && b % i == 0)
             return i;
     }
