@@ -36,10 +36,14 @@ namespace Kostic017.Pigeon
 
             builtinBag.RegisterVariable(PigeonType.String, "author", true, "Nikola Kostic Koce");
 
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.IntList);
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.FloatList);
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.StringList);
-            builtinBag.RegisterFunction(PigeonType.Int, "list_count", ListCount, PigeonType.BoolList);
+            builtinBag.RegisterFunction(PigeonType.Int, "len", StringLen, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.String, "char_get", StringGetCharAt, PigeonType.String, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.String, "char_set", StringSetCharAt, PigeonType.String, PigeonType.Int, PigeonType.String);
+
+            builtinBag.RegisterFunction(PigeonType.Int, "len", ListCount, PigeonType.IntList);
+            builtinBag.RegisterFunction(PigeonType.Int, "len", ListCount, PigeonType.FloatList);
+            builtinBag.RegisterFunction(PigeonType.Int, "len", ListCount, PigeonType.StringList);
+            builtinBag.RegisterFunction(PigeonType.Int, "len", ListCount, PigeonType.BoolList);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.IntList, PigeonType.Int);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.FloatList, PigeonType.Float);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.StringList, PigeonType.String);
@@ -88,6 +92,27 @@ namespace Kostic017.Pigeon
         {
             foreach (var error in errorBag)
                 writer.WriteLine(error.ToString());
+        }
+
+        private static object StringLen(object[] args)
+        {
+            var str = (string)args[0];
+            return str.Length;
+        }
+
+        private static object StringGetCharAt(object[] args)
+        {
+            var str = (string)args[0];
+            var index = (int)args[1];
+            return str[index].ToString();
+        }
+
+        private static object StringSetCharAt(object[] args)
+        {
+            var str = (string)args[0];
+            var index = (int)args[1];
+            var ch = (string)args[2];
+            return str.Substring(0, index) + ch + str.Substring(index + 1);
         }
 
         private static object ListCount(object[] args)

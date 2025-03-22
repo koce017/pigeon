@@ -4,7 +4,6 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TestProject
 {
@@ -75,16 +74,16 @@ namespace TestProject
 
         private bool HandleCommand(string line)
         {
-            if (!line.StartsWith('#'))
+            if (!line.StartsWith('$'))
                 return false;
             var tokens = line.Split(' ');
 
             switch (tokens[0])
             {
-                case "#cls":
+                case "$cls":
                     Console.Clear();
                     break;
-                case "#tree":
+                case "$tree":
                     printTree = !printTree;
                     break;
                 default:
