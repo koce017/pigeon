@@ -4,7 +4,6 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TestProject
 {
