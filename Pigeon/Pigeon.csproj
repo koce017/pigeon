@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>Kostic017.Pigeon</RootNamespace>
   </PropertyGroup>
   <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /y &quot;$(ProjectDir)$(OutDir)$(TargetFileName)&quot; &quot;$(SolutionDir)..\CodingGame\Assets\Imports&quot;" />
+    <Exec Command="copy /y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)..\CodingGame\Assets\Imports&quot;" />
   </Target>-->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

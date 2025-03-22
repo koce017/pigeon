@@ -169,7 +169,7 @@ namespace Kostic017.Pigeon
             var returnType = context.expr() != null ? Types.Get(context.expr()) : PigeonType.Void;
 
             RuleContext node = context;
-            while (node is not PigeonParser.FunctionDeclContext)
+            while (!(node is PigeonParser.FunctionDeclContext))
                 node = node.Parent;
 
             var n = ((PigeonParser.FunctionDeclContext)node);
@@ -208,15 +208,14 @@ namespace Kostic017.Pigeon
             var name = context.ID().GetText();
             if (scope.TryGetVariable(name, out var variable))
             {
-                var type = variable.Type.Name switch
+                switch (variable.Type.Name)
                 {
-                    "[]int" => PigeonType.Int,
-                    "[]float" => PigeonType.Float,
-                    "[]string" => PigeonType.String,
-                    "[]bool" => PigeonType.Bool,
-                    _ => throw new InternalErrorException($"Unsupported list type {variable.Type.Name} at line {context.GetTextSpan().Line}"),
+                    case "[]int": Types.Put(context, PigeonType.Int); break;
+                    case "[]float": Types.Put(context, PigeonType.Float); break;
+                    case "[]string": Types.Put(context, PigeonType.String); break;
+                    case "[]bool": Types.Put(context, PigeonType.Bool); break;
+                    default: throw new InternalErrorException($"Unsupported list type {variable.Type.Name} at line {context.GetTextSpan().Line}");
                 };
-                Types.Put(context, type);
             }
             else
             {

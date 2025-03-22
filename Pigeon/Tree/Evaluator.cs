@@ -24,7 +24,7 @@ namespace Kostic017.Pigeon
     class Evaluator : PigeonBaseVisitor<object>
     {
         private readonly SemanticAnalyser analyser;
-        private readonly Stack<FunctionScope> functionScopes = new();
+        private readonly Stack<FunctionScope> functionScopes = new Stack<FunctionScope>();
 
         internal Evaluator(SemanticAnalyser analyser)
         {
@@ -494,8 +494,8 @@ namespace Kostic017.Pigeon
 
         private  bool ShouldCreateScope(PigeonParser.StmtBlockContext context)
         {
-            return context.Parent is not PigeonParser.ForStatementContext;
+            return !(context.Parent is PigeonParser.ForStatementContext);
         }
-        
+
     }
 }

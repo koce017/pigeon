@@ -27,7 +27,7 @@ namespace Kostic017.Pigeon.Operators
             return false;
         }
 
-        private static readonly Dictionary<string, AssignmentOperator[]> operators = new()
+        private static readonly Dictionary<string, AssignmentOperator[]> operators = new Dictionary<string, AssignmentOperator[]>()
         {
                 {
                     "=",

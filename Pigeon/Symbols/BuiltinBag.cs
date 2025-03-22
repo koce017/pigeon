@@ -5,8 +5,8 @@ namespace Kostic017.Pigeon.Symbols
 {
     public class BuiltinBag
     {
-        private readonly Dictionary<string, Variable> variables = [];
-        private readonly Dictionary<string, Function> functions = [];
+        private readonly Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
+        private readonly Dictionary<string, Function> functions = new Dictionary<string, Function>();
 
         public void RegisterVariable(PigeonType type, string name, bool readOnly, object value)
         {

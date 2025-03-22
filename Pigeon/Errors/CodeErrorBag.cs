@@ -6,7 +6,7 @@ namespace Kostic017.Pigeon.Errors
 {
     class CodeErrorBag : IEnumerable<CodeError>
     {
-        private readonly List<CodeError> errors = new();
+        private readonly List<CodeError> errors = new List<CodeError>();
 
         internal void Report(string message, TextSpan textSpan)
         {
