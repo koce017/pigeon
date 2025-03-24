@@ -112,6 +112,13 @@ namespace Kostic017.Pigeon
             var varName = context.varAssignLhs().ID().GetText();
             var valType = Types.Get(context.expr());
 
+            if (context.varAssignLhs().index != null)
+            {
+                var idxType = Types.Get(context.varAssignLhs().index);
+                if (idxType != PigeonType.Int)
+                    errorBag.ReportUnexpectedType(context.varAssignLhs().index.GetTextSpan(), PigeonType.Int, idxType);
+            }
+
             if (scope.TryGetVariable(varName, out var variable))
             {
                 if (variable.ReadOnly)
@@ -150,7 +157,6 @@ namespace Kostic017.Pigeon
         {
             CheckExprType(context.expr(), PigeonType.Bool);
         }
-
 
         public override void ExitBreakStatement([NotNull] PigeonParser.BreakStatementContext context)
         {
@@ -222,6 +228,9 @@ namespace Kostic017.Pigeon
                 Types.Put(context, PigeonType.Error);
                 errorBag.ReportUndeclaredVariable(context.GetTextSpan(), name);
             }
+
+            if (Types.Get(context.index) != PigeonType.Int)
+                errorBag.ReportUnexpectedType(context.index.GetTextSpan(), PigeonType.Int, Types.Get(context.index));
         }
 
         public override void ExitNumberLiteral([NotNull] PigeonParser.NumberLiteralContext context)
@@ -324,7 +333,6 @@ namespace Kostic017.Pigeon
             if (actual != expected)
                 errorBag.ReportUnexpectedType(context.GetTextSpan(), expected, actual);
         }
-
 
         private static bool NumberTypes(PigeonType t1, PigeonType t2)
         {
