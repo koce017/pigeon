@@ -112,19 +112,29 @@ namespace Kostic017.Pigeon
             var varName = context.varAssignLhs().ID().GetText();
             var valType = Types.Get(context.expr());
 
-            if (context.varAssignLhs().index != null)
-            {
-                var idxType = Types.Get(context.varAssignLhs().index);
-                if (idxType != PigeonType.Int)
-                    errorBag.ReportUnexpectedType(context.varAssignLhs().index.GetTextSpan(), PigeonType.Int, idxType);
-            }
-
             if (scope.TryGetVariable(varName, out var variable))
             {
                 if (variable.ReadOnly)
                     errorBag.ReportRedefiningReadOnlyVariable(context.GetTextSpan(), varName);
                 if (!AssignmentOperator.IsAssignable(context.op.Text, variable.Type, valType))
                     errorBag.ReportInvalidTypeAssignment(context.GetTextSpan(), varName, variable.Type, valType);
+
+                if (context.varAssignLhs().index != null)
+                {
+                    if (variable.Type == PigeonType.Int)
+                        errorBag.ReportUnexpectedType(context.varAssignLhs().GetTextSpan(), PigeonType.IntList, valType);
+                    else if (variable.Type == PigeonType.Float)
+                        errorBag.ReportUnexpectedType(context.varAssignLhs().GetTextSpan(), PigeonType.FloatList, valType);
+                    else if (variable.Type == PigeonType.String)
+                        errorBag.ReportUnexpectedType(context.varAssignLhs().GetTextSpan(), PigeonType.StringList, valType);
+                    else if (variable.Type == PigeonType.BoolList)
+                        errorBag.ReportUnexpectedType(context.varAssignLhs().GetTextSpan(), PigeonType.BoolList, valType);
+
+                    var idxType = Types.Get(context.varAssignLhs().index);
+
+                    if (idxType != PigeonType.Int)
+                        errorBag.ReportUnexpectedType(context.varAssignLhs().index.GetTextSpan(), PigeonType.Int, idxType);
+                }
             }
             else
                 errorBag.ReportUndeclaredVariable(context.GetTextSpan(), varName);

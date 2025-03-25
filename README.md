@@ -57,6 +57,8 @@ void set_remove(set, string);
 void set_remove(set, bool);
 ```
 
+If functions returns `any`, variants with `_i` (int), `_f` (float), and `_b` (bool) suffixes are available.
+
 ## Parsing Trees
 Toggle parsing trees with the `$tree` command.
 
