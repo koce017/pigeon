@@ -19,9 +19,9 @@ namespace Kostic017.Pigeon.Tests
         [MemberData(nameof(TestCases))]
         public void Test(string sample)
         {
-            var inFile = Path.Combine(TestsFolder, sample + ".in");
+            var inFile = Path.Combine(TestsFolder, sample + ".in.txt");
             var code = NormalizeWhitespace(File.ReadAllText(Path.Combine(SamplesFolder, sample + ".pig")));
-            var outputs = ReadCases(Path.Combine(TestsFolder, sample + ".out"));
+            var outputs = ReadCases(Path.Combine(TestsFolder, sample + ".out.txt"));
 
             if (File.Exists(inFile))
             {
@@ -51,8 +51,12 @@ namespace Kostic017.Pigeon.Tests
 
         public static IEnumerable<object[]> TestCases()
         {
-            foreach (var sample in Directory.GetFiles(TestsFolder, "*.out"))
-                yield return new string[] { Path.GetFileNameWithoutExtension(sample) };
+            foreach (var outFilePath in Directory.GetFiles(TestsFolder, "*.out.txt"))
+            {
+                string fileName = Path.GetFileName(outFilePath);
+                yield return new string[] { fileName.Substring(0, fileName.IndexOf('.')) };
+            }
+
         }
 
         private string ActualOutput()
