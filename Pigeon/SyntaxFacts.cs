@@ -6,18 +6,17 @@ namespace Kostic017.Pigeon
     {
         public static readonly HashSet<string> Keywords = new HashSet<string>()
         {
+            "let",
+            "const",
             "if",
             "else",
             "for",
             "to",
-            "downto",
-            "do",
             "while",
+            "do",
             "break",
             "continue",
             "return",
-            "let",
-            "const",
         };
 
         public static readonly HashSet<string> Types = new HashSet<string>()
@@ -25,11 +24,22 @@ namespace Kostic017.Pigeon
             "void",
             "int",
             "float",
-            "bool",
             "string",
-            "list",
-            "dict",
+            "bool",
+            "[]int",
+            "[]float",
+            "[]string",
+            "[]bool",
             "set",
+        };
+
+        public static readonly HashSet<string> ComplexLiterals = new HashSet<string>()
+        {
+            "{}",
+            "int[]",
+            "float[]",
+            "string[]",
+            "bool[]",
         };
 
         internal static readonly HashSet<char> EscapeChars = new HashSet<char>()

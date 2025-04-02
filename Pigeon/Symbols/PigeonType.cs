@@ -6,10 +6,10 @@
 
         public static readonly PigeonType Any = new PigeonType("*");
         public static readonly PigeonType Void = new PigeonType("void");
-        public static readonly PigeonType Bool = new PigeonType("bool");
         public static readonly PigeonType Int = new PigeonType("int");
         public static readonly PigeonType Float = new PigeonType("float");
         public static readonly PigeonType String = new PigeonType("string");
+        public static readonly PigeonType Bool = new PigeonType("bool");
         public static readonly PigeonType IntList = new PigeonType("[]int");
         public static readonly PigeonType FloatList = new PigeonType("[]float");
         public static readonly PigeonType StringList = new PigeonType("[]string");

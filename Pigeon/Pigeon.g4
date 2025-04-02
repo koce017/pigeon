@@ -27,16 +27,16 @@ varAssign
     ;
 
 stmt
-    : varDecl                                              # variableDeclarationStatement
-    | varAssign                                            # variableAssignmentStatement
-    | functionCall SEP                                     # functionCallStatement
-    | 'if' expr stmtBlock ('else' stmtBlock)?              # ifStatement
-    | 'for' ID '=' expr 'to' expr stmtBlock                # forStatement
-    | 'while' expr stmtBlock                               # whileStatement
-    | 'do' stmtBlock 'while' expr                          # doWhileStatement
-    | 'break' SEP                                          # breakStatement
-    | 'continue' SEP                                       # continueStatement
-    | 'return' expr? SEP                                   # returnStatement
+    : varDecl                                 # variableDeclarationStatement
+    | varAssign                               # variableAssignmentStatement
+    | functionCall SEP                        # functionCallStatement
+    | 'if' expr stmtBlock ('else' stmtBlock)? # ifStatement
+    | 'for' ID '=' expr 'to' expr stmtBlock   # forStatement
+    | 'while' expr stmtBlock                  # whileStatement
+    | 'do' stmtBlock 'while' expr             # doWhileStatement
+    | 'break' SEP                             # breakStatement
+    | 'continue' SEP                          # continueStatement
+    | 'return' expr? SEP                      # returnStatement
     ;
 
 stmtBlock
@@ -46,46 +46,41 @@ stmtBlock
     ;
 
 expr
-    : ID                                  # variableExpression
-    | ID '[' index=expr ']'               # listElementExpression
-    | NUMBER                              # numberLiteral
-    | STRING                              # stringLiteral
-    | BOOL                                # boolLiteral
-    | 'int[]'                             # emptyIntListLiteral
-    | 'float[]'                           # emptyFloatListLiteral
-    | 'bool[]'                            # emptyBoolListLiteral
-    | 'string[]'                          # emptyStringListLiteral
-    | '{}'                                # emptySetLiteral
-    | '(' expr ')'                        # parenthesizedExpression
-    | functionCall                        # functionCallExpression
-    | op='-' expr                         # unaryExpression
-    | op='+' expr                         # unaryExpression
-    | op='!' expr                         # unaryExpression
-    |<assoc=right> expr '^' expr          # binaryExpression
-    | expr op='%' expr                    # binaryExpression
-    | expr op='/' expr                    # binaryExpression
-    | expr op='*' expr                    # binaryExpression
-    | expr op='+' expr                    # binaryExpression
-    | expr op='-' expr                    # binaryExpression
-    | expr op='<=' expr                   # binaryExpression
-    | expr op='>=' expr                   # binaryExpression
-    | expr op='<' expr                    # binaryExpression
-    | expr op='>' expr                    # binaryExpression
-    | expr op='==' expr                   # binaryExpression
-    | expr op='!=' expr                   # binaryExpression
-    | expr op='&&' expr                   # binaryExpression
-    | expr op='||' expr                   # binaryExpression
-    |<assoc=right> expr '?' expr ':' expr # ternaryExpression
+    : ID                                      # variableExpression
+    | ID '[' index=expr ']'                   # listElementExpression
+    | NUMBER                                  # numberLiteral
+    | STRING                                  # stringLiteral
+    | BOOL                                    # boolLiteral
+    | 'int[]'                                 # emptyIntListLiteral
+    | 'float[]'                               # emptyFloatListLiteral
+    | 'bool[]'                                # emptyBoolListLiteral
+    | 'string[]'                              # emptyStringListLiteral
+    | '{}'                                    # emptySetLiteral
+    | '(' expr ')'                            # parenthesizedExpression
+    | functionCall                            # functionCallExpression
+    | op='-' expr                             # unaryExpression
+    | op='+' expr                             # unaryExpression
+    | op='!' expr                             # unaryExpression
+    |<assoc=right> expr '^' expr              # binaryExpression
+    | expr op='%' expr                        # binaryExpression
+    | expr op='/' expr                        # binaryExpression
+    | expr op='*' expr                        # binaryExpression
+    | expr op='+' expr                        # binaryExpression
+    | expr op='-' expr                        # binaryExpression
+    | expr op='<=' expr                       # binaryExpression
+    | expr op='>=' expr                       # binaryExpression
+    | expr op='<' expr                        # binaryExpression
+    | expr op='>' expr                        # binaryExpression
+    | expr op='==' expr                       # binaryExpression
+    | expr op='!=' expr                       # binaryExpression
+    | expr op='&&' expr                       # binaryExpression
+    | expr op='||' expr                       # binaryExpression
+    |<assoc=right> expr '?' expr ':' expr     # ternaryExpression
     ;
 
 STRING : '"' (ESCAPE|.)*? '"' ;
 
 COMMENT : ('//' .*? '\r'? '\n' | '/*' .*? '*/') -> channel(HIDDEN) ;
-
-BOOL
-    : 'true'
-    | 'false'
-    ;
 
 TYPE
     : 'void'
@@ -104,6 +99,11 @@ NUMBER
     : DIGIT+
     | '.' DIGIT+
     | DIGIT+ '.' DIGIT*
+    ;
+
+BOOL
+    : 'true'
+    | 'false'
     ;
 
 ID : ('_'|LETTER)('_'|'.'|LETTER|DIGIT)* ;

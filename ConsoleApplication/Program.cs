@@ -87,7 +87,7 @@ namespace TestProject
                     printTree = !printTree;
                     break;
                 default:
-                    Console.WriteLine($"Valid commands: #cls, #tree");
+                    Console.WriteLine($"Valid commands: $cls, $tree");
                     break;
             }
 

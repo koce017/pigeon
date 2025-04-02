@@ -55,8 +55,11 @@ namespace Kostic017.Pigeon
                         Console.ForegroundColor = ConsoleColor.Blue;
                     else if (token.Type == PigeonParser.ID)
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                    else if (token.Type == PigeonParser.NUMBER)
-                        Console.ForegroundColor = ConsoleColor.Green;
+                    else if (token.Type == PigeonParser.NUMBER
+                        || token.Type == PigeonParser.STRING
+                        || token.Type == PigeonParser.BOOL
+                        || SyntaxFacts.ComplexLiterals.Contains(token.Text))
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
                 }
                 else
                 {
