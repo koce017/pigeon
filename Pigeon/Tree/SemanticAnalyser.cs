@@ -121,21 +121,21 @@ namespace Kostic017.Pigeon
 
                 if (context.varAssignLhs().index != null)
                 {
-                    // TODO: unsure if this code is needed
-                    //if (variable.Type == PigeonType.Int)
-                    //    errorBag.ReportUnexpectedType(context.varAssignLhs().GetTextSpan(), PigeonType.IntList, valType);
-                    //else if (variable.Type == PigeonType.Float)
-                    //    errorBag.ReportUnexpectedType(context.varAssignLhs().GetTextSpan(), PigeonType.FloatList, valType);
-                    //else if (variable.Type == PigeonType.String)
-                    //    errorBag.ReportUnexpectedType(context.varAssignLhs().GetTextSpan(), PigeonType.StringList, valType);
-                    //else if (variable.Type == PigeonType.BoolList)
-                    //    errorBag.ReportUnexpectedType(context.varAssignLhs().GetTextSpan(), PigeonType.BoolList, valType);
-
                     var idxType = Types.Get(context.varAssignLhs().index);
-
                     if (idxType != PigeonType.Int)
                         errorBag.ReportUnexpectedType(context.varAssignLhs().index.GetTextSpan(), PigeonType.Int, idxType);
                 }
+                else
+                {
+                    if (variable.Type.Equals(PigeonType.IntList)
+                        || variable.Type.Equals(PigeonType.FloatList)
+                        || variable.Type.Equals(PigeonType.StringList)
+                        || variable.Type.Equals(PigeonType.BoolList))
+                    {
+                        errorBag.ReportInvalidTypeAssignment(context.GetTextSpan(), varName, variable.Type, valType);
+                    }
+                }
+
             }
             else
                 errorBag.ReportUndeclaredVariable(context.GetTextSpan(), varName);
