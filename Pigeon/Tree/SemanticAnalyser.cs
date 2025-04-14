@@ -121,7 +121,16 @@ namespace Kostic017.Pigeon
 
                 if (context.varAssignLhs().index != null)
                 {
+                    if (!variable.Type.Equals(PigeonType.IntList)
+                        && !variable.Type.Equals(PigeonType.FloatList)
+                        && !variable.Type.Equals(PigeonType.StringList)
+                        && !variable.Type.Equals(PigeonType.BoolList))
+                    {
+                        errorBag.ReportUnexpectedType(context.varAssignLhs().GetTextSpan(), valType);
+                    }
+
                     var idxType = Types.Get(context.varAssignLhs().index);
+
                     if (idxType != PigeonType.Int)
                         errorBag.ReportUnexpectedType(context.varAssignLhs().index.GetTextSpan(), PigeonType.Int, idxType);
                 }

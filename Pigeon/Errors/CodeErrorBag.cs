@@ -58,6 +58,11 @@ namespace Kostic017.Pigeon.Errors
             Report($"Variable '{name}' is read-only", textSpan);
         }
 
+        internal void ReportUnexpectedType(TextSpan textSpan, PigeonType actualType)
+        {
+            Report($"Got value of unexpected type {actualType.Name}", textSpan);
+        }
+
         internal void ReportUnexpectedType(TextSpan textSpan, PigeonType expectedType, PigeonType actualType)
         {
             Report($"Got value of type {actualType.Name} instead of {expectedType.Name}", textSpan);
