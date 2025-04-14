@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Kostic017.Pigeon.Symbols;
+using System.Collections.Generic;
 
 namespace Kostic017.Pigeon
 {
@@ -21,16 +22,16 @@ namespace Kostic017.Pigeon
 
         public static readonly HashSet<string> Types = new HashSet<string>()
         {
-            "void",
-            "int",
-            "float",
-            "string",
-            "bool",
-            "[]int",
-            "[]float",
-            "[]string",
-            "[]bool",
-            "set",
+            PigeonType.Void.Name,
+            PigeonType.Int.Name,
+            PigeonType.Float.Name,
+            PigeonType.String.Name,
+            PigeonType.Bool.Name,
+            PigeonType.IntList.Name,
+            PigeonType.FloatList.Name,
+            PigeonType.StringList.Name,
+            PigeonType.BoolList.Name,
+            PigeonType.Set.Name,
         };
 
         public static readonly HashSet<string> ComplexLiterals = new HashSet<string>()

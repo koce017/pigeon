@@ -19,10 +19,10 @@ int fibonacci(int i) {
 * `float`
 * `string`
 * `bool`
-* `[]int`
-* `[]float`
-* `[]string`
-* `[]bool`
+* `list<int>`
+* `list<float>`
+* `list<string>`
+* `list<bool>`
 * `set`
 
 ## Built-In Functions
@@ -31,15 +31,15 @@ int len(string);
 string char_get(string, int);
 string char_set(string, int, string);
 
-int len([]int);
-int len([]float);
-int len([]string);
-int len([]bool);
+int len(list<int>);
+int len(list<float>);
+int len(list<string>);
+int len(list<bool>);
 
-void list_add([]int, int);
-void list_add([]float, float);
-void list_add([]string, string);
-void list_add([]bool, bool);
+void list_add(list<int>, int);
+void list_add(list<float>, float);
+void list_add(list<string>, string);
+void list_add(list<bool>, bool);
 
 bool set_in(set, int);
 bool set_in(set, float);

@@ -226,10 +226,10 @@ namespace Kostic017.Pigeon
             {
                 switch (variable.Type.Name)
                 {
-                    case "[]int": Types.Put(context, PigeonType.Int); break;
-                    case "[]float": Types.Put(context, PigeonType.Float); break;
-                    case "[]string": Types.Put(context, PigeonType.String); break;
-                    case "[]bool": Types.Put(context, PigeonType.Bool); break;
+                    case "list<int>": Types.Put(context, PigeonType.Int); break;
+                    case "list<float>": Types.Put(context, PigeonType.Float); break;
+                    case "list<string>": Types.Put(context, PigeonType.String); break;
+                    case "list<bool>": Types.Put(context, PigeonType.Bool); break;
                     default: throw new InternalErrorException($"Unsupported list type {variable.Type.Name} at line {context.GetTextSpan().Line}");
                 };
             }

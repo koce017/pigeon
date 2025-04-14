@@ -7,7 +7,7 @@ for i = 0 to n - 1
 
 print(binary_search(a, n, t));
 
-int binary_search([]int a, int n, int t)
+int binary_search(list<int> a, int n, int t)
 {
     let l = 0;
     let r = n - 1;

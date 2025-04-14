@@ -13,7 +13,7 @@ for i = 0 to 10
 for i = 0 to len(c) - 1
     print(c[i]);
 
-void populate(int var1, set var2, []string var3)
+void populate(int var1, set var2, list<string> var3)
 {
     var1 = 100;
         

@@ -88,10 +88,10 @@ TYPE
     | 'float'
     | 'string'
     | 'bool'
-    | '[]int'
-    | '[]float'
-    | '[]string'
-    | '[]bool'
+    | 'list<int>'
+    | 'list<float>'
+    | 'list<string>'
+    | 'list<bool>'
     | 'set'
     ;
 
