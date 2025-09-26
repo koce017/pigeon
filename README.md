@@ -1,20 +1,28 @@
-# Pigeon
+Pigeon is a programming language I've implemented using C# and ANTLR. It's not particularly complex, but it includes the basic features one would expect from a programming language.
 
-## Fibonacci Sequence
-```c#
-let n = prompt_i("n: ");
+Here’s an example of a recursive Fibonacci sequence generator:
 
-for i = 1 to n
-    print(fibonacci(i));
-
-int fibonacci(int i) {
+```
+int fibonacci(int i)
+{
     if (i == 0 || i == 1)
         return i;
     return fibonacci(i - 1) + fibonacci(i - 2);
 }
+
+void main()
+{
+    let n = prompt_i("n: ");
+
+    for i = 1 to n
+        print(fibonacci(i));
+}
 ```
 
-## Data Types
+More examples are available in the **Samples** directory.
+
+Pigeon supports the following types:
+
 * `int`
 * `float`
 * `string`
@@ -25,8 +33,18 @@ int fibonacci(int i) {
 * `list<bool>`
 * `set`
 
-## Built-In Functions
-```c#
+Variables are declared using `let` or `const`. Their type is inferred from the initial value:
+
+* `0` → `int`
+* `3.14` → `float`
+* `true` → `bool`
+* `"hello"` → `string`
+* `int[]` → `list<int>`
+* `{}` → `set`
+
+Pigeon includes built-in functions for manipulating strings, lists, and sets. Developers can also inject their custom functions and variables directly into the interpreter.
+
+```
 int len(string);
 string char_get(string, int);
 string char_set(string, int, string);
@@ -57,9 +75,31 @@ void set_remove(set, string);
 void set_remove(set, bool);
 ```
 
-If functions returns `any`, variants with `_i` (int), `_f` (float), and `_b` (bool) suffixes are available.
+*If function returns `any`, variants with `_i` (int), `_f` (float), and `_b` (bool) suffixes are available.*
 
-## Parsing Trees
-Toggle parsing trees with the `$tree` command.
+The core parsing and interpretation logic is packaged in a DLL, which can be integrated into other applications. For example, **PigeonCLI** is a console-based interface that uses this DLL.
+
+**PigeonCLI** also comes with several built-in functions:
+
+```
+void print(int i);
+void print(bool b);
+void print(float f);
+void print(string s);
+int prompt_i(string msg);
+bool prompt_b(string msg);
+float prompt_f(string msg);
+string prompt_s(string msg);
+```
+
+Appropriate `prompt_` function must be used here because, as mentioned earlier, the datatype of variables is inferred by their initial value.
+
+You can also pass the source file as an argument to the **PigeonCLI**.
+
+```
+PigeonCLI source.pig
+```
+
+To show the parsing tree in the command line, execute the `$tree` command beforehand.
 
 ![Parsing Tree Example](tree.png)

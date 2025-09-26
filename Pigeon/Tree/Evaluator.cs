@@ -34,10 +34,7 @@ namespace Kostic017.Pigeon
         public override object VisitProgram([NotNull] PigeonParser.ProgramContext context)
         {
             functionScopes.Push(new FunctionScope(analyser.GlobalScope));
-
-            foreach (var stmt in context.stmt())
-                Visit(stmt);
-            
+            Visit(context.main);
             return null;
         }
 

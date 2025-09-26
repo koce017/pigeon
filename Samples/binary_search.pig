@@ -1,12 +1,3 @@
-let a = int[];
-let n = prompt_i("n: ");
-let t = prompt_i("t: ");
-
-for i = 0 to n - 1
-    list_add(a, prompt_i("a[" + i + "]: "));
-
-print(binary_search(a, n, t));
-
 int binary_search(list<int> a, int n, int t)
 {
     let l = 0;
@@ -25,4 +16,16 @@ int binary_search(list<int> a, int n, int t)
     }
     
     return -1;
+}
+
+void main()
+{
+    let a = int[];
+    let n = prompt_i("n: ");
+    let t = prompt_i("t: ");
+
+    for i = 0 to n - 1
+        list_add(a, prompt_i("a[" + i + "]: "));
+
+    print(binary_search(a, n, t));
 }
