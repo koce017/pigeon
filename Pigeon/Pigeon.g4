@@ -1,10 +1,11 @@
 grammar Pigeon;
 
-program : (stmt | functionDecl)+ EOF ;
+program : functionDecl* main=mainFunction functionDecl* EOF ;
 functionDecl : TYPE ID '(' functionParams? ')' stmtBlock ;
 functionParams : TYPE ID (',' TYPE ID)* ;
 functionCall : ID '(' functionArgs? ')' ;
 functionArgs : expr (',' expr)* ;
+mainFunction : 'void main()' stmtBlock ;
 
 varDecl
     : keyword='let' ID '=' expr SEP
