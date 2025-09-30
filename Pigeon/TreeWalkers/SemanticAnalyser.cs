@@ -211,8 +211,15 @@ namespace Kostic017.Pigeon
             GlobalScope.TryGetFunction(signature, out var function);
 
             if (returnType != function.ReturnType)
-                if (!NumberTypes(returnType, function.ReturnType))
+            {
+                bool isFine = ((returnType == PigeonType.Int && function.ReturnType == PigeonType.Int)
+                    || (returnType == PigeonType.Int && function.ReturnType == PigeonType.Float)
+                    //|| (returnType == PigeonType.Float && function.ReturnType == PigeonType.Int) // cannot implicitly convert type 'float' to 'int'
+                    || (returnType == PigeonType.Float && function.ReturnType == PigeonType.Float));
+                
+                if (!isFine)
                     errorBag.ReportUnexpectedType(context.expr().GetTextSpan(), function.ReturnType, returnType);
+            }
         }
 
         public override void ExitVariableExpression([NotNull] PigeonParser.VariableExpressionContext context)
@@ -352,11 +359,6 @@ namespace Kostic017.Pigeon
             var actual = Types.Get(context);
             if (actual != expected)
                 errorBag.ReportUnexpectedType(context.GetTextSpan(), expected, actual);
-        }
-
-        private static bool NumberTypes(PigeonType t1, PigeonType t2)
-        {
-            return (t1 == PigeonType.Int && t2 == PigeonType.Float) || (t1 == PigeonType.Float && t2 == PigeonType.Int);
         }
 
         private static bool ShouldCreateScope(PigeonParser.StmtBlockContext context)

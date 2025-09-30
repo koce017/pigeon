@@ -44,35 +44,21 @@ Variables are declared using `let` or `const`. Their type is inferred from the i
 
 Pigeon includes built-in functions for manipulating strings, lists, and sets. Developers can also inject their custom functions and variables directly into the interpreter.
 
+ > *T = int, float, bool, or string*
+
 ```
-int len(string);
-string char_get(string, int);
-string char_set(string, int, string);
+int float_to_int(float number);
 
-int len(list<int>);
-int len(list<float>);
-int len(list<string>);
-int len(list<bool>);
+int len(string str);
+string char_get(string str, int index);
+string char_set(string str, int index, string ch);
 
-void list_add(list<int>, int);
-void list_add(list<float>, float);
-void list_add(list<string>, string);
-void list_add(list<bool>, bool);
+int len(list<T> l);
+void list_add(list<T> l, T element);
 
-bool set_in(set, int);
-bool set_in(set, float);
-bool set_in(set, string);
-bool set_in(set, bool);
-
-void set_add(set, int);
-void set_add(set, float);
-void set_add(set, string);
-void set_add(set, bool);
-
-void set_remove(set, int);
-void set_remove(set, float);
-void set_remove(set, string);
-void set_remove(set, bool);
+bool set_in(set s, T element);
+void set_add(set s, T element);
+void set_remove(set s, T element);
 ```
 
 *If function returns `any`, variants with `_i` (int), `_f` (float), and `_b` (bool) suffixes are available.*
@@ -82,10 +68,7 @@ The core parsing and interpretation logic is packaged in a DLL, which can be int
 **PigeonCLI** also comes with several built-in functions:
 
 ```
-void print(int i);
-void print(bool b);
-void print(float f);
-void print(string s);
+void print(T msg);
 int prompt_i(string msg);
 bool prompt_b(string msg);
 float prompt_f(string msg);

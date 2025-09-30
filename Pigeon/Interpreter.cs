@@ -30,11 +30,13 @@ namespace Kostic017.Pigeon
 
             if (!errorBag.IsEmpty())
                 return;
-
+            
             var walker = new ParseTreeWalker();
             var globalScope = new GlobalScope();
 
             builtinBag.RegisterVariable(PigeonType.String, "author", true, "Nikola Kostic Koce");
+
+            builtinBag.RegisterFunction(PigeonType.Int, "float_to_int", FloatToInt, PigeonType.Float);
 
             builtinBag.RegisterFunction(PigeonType.Int, "len", StringLen, PigeonType.String);
             builtinBag.RegisterFunction(PigeonType.String, "char_get", StringGetCharAt, PigeonType.String, PigeonType.Int);
@@ -92,6 +94,11 @@ namespace Kostic017.Pigeon
         {
             foreach (var error in errorBag)
                 writer.WriteLine(error.ToString());
+        }
+
+        private static object FloatToInt(object[] args)
+        {
+            return (int)(float)args[0];
         }
 
         private static object StringLen(object[] args)
