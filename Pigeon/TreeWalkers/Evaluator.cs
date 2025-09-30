@@ -34,7 +34,15 @@ namespace Kostic017.Pigeon
         public override object VisitProgram([NotNull] PigeonParser.ProgramContext context)
         {
             functionScopes.Push(new FunctionScope(analyser.GlobalScope));
-            Visit(context.main);
+            
+            try
+            {
+                Visit(context.main);
+            }
+            catch (FuncReturnValueException) // should pick up return statements in main
+            {
+            }
+            
             return null;
         }
 
@@ -489,7 +497,7 @@ namespace Kostic017.Pigeon
                 throw new EvaluatorException($"Index {index} out of bounds for length {list.Count} at line {line}");
         }
 
-        private  bool ShouldCreateScope(PigeonParser.StmtBlockContext context)
+        private bool ShouldCreateScope(PigeonParser.StmtBlockContext context)
         {
             return !(context.Parent is PigeonParser.ForStatementContext);
         }

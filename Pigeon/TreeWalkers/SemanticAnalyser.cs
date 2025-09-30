@@ -195,8 +195,15 @@ namespace Kostic017.Pigeon
             var returnType = context.expr() != null ? Types.Get(context.expr()) : PigeonType.Void;
 
             RuleContext node = context;
-            while (!(node is PigeonParser.FunctionDeclContext))
+            while (!(node is PigeonParser.MainFunctionContext) && !(node is PigeonParser.FunctionDeclContext))
                 node = node.Parent;
+
+            if (node is PigeonParser.MainFunctionContext)
+            {
+                if (returnType != PigeonType.Void)
+                    errorBag.ReportUnexpectedType(context.expr().GetTextSpan(), PigeonType.Void, returnType);
+                return;
+            }
 
             var n = ((PigeonParser.FunctionDeclContext)node);
             var functionName = n.ID().GetText();
@@ -216,9 +223,9 @@ namespace Kostic017.Pigeon
                     || (returnType == PigeonType.Int && function.ReturnType == PigeonType.Float)
                     //|| (returnType == PigeonType.Float && function.ReturnType == PigeonType.Int) // cannot implicitly convert type 'float' to 'int'
                     || (returnType == PigeonType.Float && function.ReturnType == PigeonType.Float));
-                
+
                 if (!isFine)
-                    errorBag.ReportUnexpectedType(context.expr().GetTextSpan(), function.ReturnType, returnType);
+                    errorBag.ReportUnexpectedType(context.GetTextSpan(), function.ReturnType, returnType);
             }
         }
 
