@@ -14,8 +14,8 @@ void populate(int var1, set var2, list<string> var3)
 void main()
 {
     let a = -1;
-    let b = {};
-    let c = string[];
+    let b = set();
+    let c = list<string>();
 
     populate(a, b, c);
 

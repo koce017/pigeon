@@ -1,6 +1,6 @@
 void main()
 {
-    let s = {};
+    let s = set();
     let n = prompt_i("n: ");
 
     for i = 0 to n - 1

@@ -39,8 +39,8 @@ Variables are declared using `let` or `const`. Their type is inferred from the i
 * `3.14` → `float`
 * `true` → `bool`
 * `"hello"` → `string`
-* `int[]` → `list<int>`
-* `{}` → `set`
+* `list<int>()` → `list<int>`
+* `set()` → `set`
 
 Pigeon includes built-in functions for manipulating strings, lists, and sets. Developers can also inject their custom functions and variables directly into the interpreter.
 

@@ -52,11 +52,11 @@ expr
     | NUMBER                                  # numberLiteral
     | STRING                                  # stringLiteral
     | BOOL                                    # boolLiteral
-    | 'int[]'                                 # emptyIntListLiteral
-    | 'float[]'                               # emptyFloatListLiteral
-    | 'bool[]'                                # emptyBoolListLiteral
-    | 'string[]'                              # emptyStringListLiteral
-    | '{}'                                    # emptySetLiteral
+    | 'list<int>()'                           # emptyIntListLiteral
+    | 'list<float>()'                         # emptyFloatListLiteral
+    | 'list<bool>()'                          # emptyBoolListLiteral
+    | 'list<string>()'                        # emptyStringListLiteral
+    | 'set()'                                 # emptySetLiteral
     | '(' expr ')'                            # parenthesizedExpression
     | functionCall                            # functionCallExpression
     | op='-' expr                             # unaryExpression

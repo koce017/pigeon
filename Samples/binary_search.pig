@@ -20,7 +20,7 @@ int binary_search(list<int> a, int n, int t)
 
 void main()
 {
-    let a = int[];
+    let a = list<int>();
     let n = prompt_i("n: ");
     let t = prompt_i("t: ");
 

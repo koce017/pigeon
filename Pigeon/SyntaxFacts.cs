@@ -36,11 +36,11 @@ namespace Kostic017.Pigeon
 
         public static readonly HashSet<string> ComplexLiterals = new HashSet<string>()
         {
-            "{}",
-            "int[]",
-            "float[]",
-            "string[]",
-            "bool[]",
+            "set()",
+            "list<int>()",
+            "list<float>()",
+            "list<string>()",
+            "list<bool>()",
         };
 
         internal static readonly HashSet<char> EscapeChars = new HashSet<char>()
