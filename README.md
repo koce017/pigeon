@@ -19,9 +19,9 @@ void main()
 }
 ```
 
-More examples are available in the **Samples** directory.
+More examples are available in the **PigeonTest/Samples** directory.
 
-Pigeon supports the following types:
+Pigeon supports the following data types:
 
 * `int`
 * `float`
@@ -47,13 +47,14 @@ Pigeon includes built-in functions for manipulating strings, lists, and sets. De
  > *T = int, float, bool, or string*
 
 ```
-int float_to_int(float number);
+int ftoi(float number);
 
 int len(string str);
-string char_get(string str, int index);
-string char_set(string str, int index, string ch);
+string get_char_at(string str, int index);
+string set_char_at(string str, int index, string ch);
 
 int len(list<T> l);
+void sort(list<T> l, string direction);
 void list_add(list<T> l, T element);
 
 bool set_in(set s, T element);

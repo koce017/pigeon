@@ -36,16 +36,20 @@ namespace Kostic017.Pigeon
 
             builtinBag.RegisterVariable(PigeonType.String, "author", true, "Nikola Kostic Koce");
 
-            builtinBag.RegisterFunction(PigeonType.Int, "float_to_int", FloatToInt, PigeonType.Float);
+            builtinBag.RegisterFunction(PigeonType.Int, "ftoi", FloatToInt, PigeonType.Float);
 
             builtinBag.RegisterFunction(PigeonType.Int, "len", StringLen, PigeonType.String);
-            builtinBag.RegisterFunction(PigeonType.String, "char_get", StringGetCharAt, PigeonType.String, PigeonType.Int);
-            builtinBag.RegisterFunction(PigeonType.String, "char_set", StringSetCharAt, PigeonType.String, PigeonType.Int, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.String, "get_char_at", StringGetCharAt, PigeonType.String, PigeonType.Int);
+            builtinBag.RegisterFunction(PigeonType.String, "set_char_at", StringSetCharAt, PigeonType.String, PigeonType.Int, PigeonType.String);
 
             builtinBag.RegisterFunction(PigeonType.Int, "len", ListCount, PigeonType.IntList);
             builtinBag.RegisterFunction(PigeonType.Int, "len", ListCount, PigeonType.FloatList);
             builtinBag.RegisterFunction(PigeonType.Int, "len", ListCount, PigeonType.StringList);
             builtinBag.RegisterFunction(PigeonType.Int, "len", ListCount, PigeonType.BoolList);
+            builtinBag.RegisterFunction(PigeonType.Void, "sort", ListSort, PigeonType.IntList, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "sort", ListSort, PigeonType.FloatList, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "sort", ListSort, PigeonType.BoolList, PigeonType.String);
+            builtinBag.RegisterFunction(PigeonType.Void, "sort", ListSort, PigeonType.StringList, PigeonType.String);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.IntList, PigeonType.Int);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.FloatList, PigeonType.Float);
             builtinBag.RegisterFunction(PigeonType.Void, "list_add", ListAdd, PigeonType.StringList, PigeonType.String);
@@ -132,6 +136,16 @@ namespace Kostic017.Pigeon
         {
             var list = (List<object>) args[0];
             list.Add(args[1]);
+            return null;
+        }
+
+        private static object ListSort(object[] args)
+        {
+            var list = (List<object>) args[0];
+            var order = (string) args[1];
+            list.Sort();
+            if (order == "desc")
+                list.Reverse();
             return null;
         }
 

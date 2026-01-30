@@ -9,8 +9,8 @@ namespace Kostic017.Pigeon.Tests
 {
     public class PigeonTest
     {
-        private static readonly string SamplesFolder = "../../../../Samples";
-        private static readonly string TestsFolder = "../../../Tests";
+        private static readonly string SamplesFolder = "../../../Samples";
+        private static readonly string TestCasesFolder = "../../../TestCases";
 
         private StringWriter outputStream;
         private Queue<string> inputStream;
@@ -19,9 +19,9 @@ namespace Kostic017.Pigeon.Tests
         [MemberData(nameof(TestCases))]
         public void Test(string sample)
         {
-            var inFile = Path.Combine(TestsFolder, sample + ".in.txt");
+            var inFile = Path.Combine(TestCasesFolder, sample + ".in.txt");
             var code = NormalizeWhitespace(File.ReadAllText(Path.Combine(SamplesFolder, sample + ".pig")));
-            var outputs = ReadCases(Path.Combine(TestsFolder, sample + ".out.txt"));
+            var outputs = ReadCases(Path.Combine(TestCasesFolder, sample + ".out.txt"));
 
             if (File.Exists(inFile))
             {
@@ -51,7 +51,7 @@ namespace Kostic017.Pigeon.Tests
 
         public static IEnumerable<object[]> TestCases()
         {
-            foreach (var outFilePath in Directory.GetFiles(TestsFolder, "*.out.txt"))
+            foreach (var outFilePath in Directory.GetFiles(TestCasesFolder, "*.out.txt"))
             {
                 string fileName = Path.GetFileName(outFilePath);
                 yield return new string[] { fileName.Substring(0, fileName.IndexOf('.')) };
